@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true" />
+		<property name="mappings">
+			<props>
+				<prop key="/test">testController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 학생과 벨을 엮어보자(weaving) -->
+	
+	<!-- AOP를 이용하기 위해서는, 공통로직 즉 횡단적 관심사항을 등록한다!! -->
+	<bean id="bell" class="test.Bell" />
+	
+	<!-- 어떤 시점에, 어떤 객체에게 횡단적 관심사항을 적용할 지 XML태그로 서술한다 
+			즉 프로그램 코드가 아니라 XML과 같은 설정파일에 구현하는 방법을 선언적이라 한다.
+	-->
+	<aop:config>
+		<aop:aspect id="bellAspect" ref="bell">
+		<!-- 어떤 시점에, 벨이 관여할지를 결정 	(시점)-->
+			<aop:pointcut expression="execution(public * test.Dog.*(..))" id="bellpointcut"/>
+		<!-- 공통기능 동작을 언제 할지,즉 학생의 동작 이전에 적용할 지 이후에 적용할 지  (위치)-->
+			<aop:before method="startBell" pointcut-ref="bellpointcut"/>
+		</aop:aspect>
+	</aop:config>
+	
+
+	
+	<bean id="student" class="test.Student"></bean>
+	<bean id="dog" class="test.Dog"></bean>
+
+	<bean id="testController" class="test.TestController">
+		<property name="student" ref="student"></property>
+		<property name="dog" ref="dog"></property>
+	</bean>
+
+</beans>

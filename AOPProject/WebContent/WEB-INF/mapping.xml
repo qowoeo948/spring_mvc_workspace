@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!-- Spring MVC가 지원하는 핸들러 매핑 중 BeanNameUrlHandlerMapping을 이용 -->
+	<!-- 이 방식은 url경로를 빈 이름에 작성하면, 해당 uri요청이 있을 때 해당 빈 컨트롤러가 작동함 -->
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"></property>
+	</bean>
+	
+	<!-- 강아지 등록 후 controller에 주입시키기 -->
+	<bean id="dog" class="test.Dog"></bean>
+
+	<bean name="/bell" class="test.TestController" >
+		<property name="dog" ref="dog" />
+	</bean>
+
+</beans>
