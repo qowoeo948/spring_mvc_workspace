@@ -36,7 +36,7 @@
     -->
     <Resource auth="Container" description="User database that can be updated and saved" factory="org.apache.catalina.users.MemoryUserDatabaseFactory" name="UserDatabase" pathname="conf/tomcat-users.xml" type="org.apache.catalina.UserDatabase"/>
   
-	 <Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" maxActive="20" maxIdle="10" maxWait="3000" name="jdbc/myoracle" password="lastuser" type="javax.sql.DataSource" url="jdbc:oracle:thin:@localhost:1521:XE" username="lastuser"/>
+	 <Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" maxActive="20" maxIdle="10" maxWait="3000" name="jdbc/oracle" password="shop" type="javax.sql.DataSource" url="jdbc:oracle:thin:@localhost:1521:XE" username="shop"/>
 	  
 	  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="3000" name="jdbc/mysql" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost/db1216" username="root"/>
 		
@@ -156,7 +156,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="SpringApp1223" path="/SpringApp1223" reloadable="true" source="org.eclipse.jst.jee.server:SpringApp1223"/><Context docBase="AOPProject" path="/" reloadable="true" source="org.eclipse.jst.jee.server:AOPProject"/></Host>
+      <Context docBase="SpringApp1223" path="/SpringApp1223" reloadable="true" source="org.eclipse.jst.jee.server:SpringApp1223"/><Context docBase="AOPProject" path="/AOPProject" reloadable="true" source="org.eclipse.jst.jee.server:AOPProject"/><Context docBase="SpringFinal" path="/" reloadable="true" source="org.eclipse.jst.jee.server:SpringFinal"/></Host>
     </Engine>
   </Service>
 </Server>

@@ -28,6 +28,7 @@
 			<aop:pointcut expression="execution(public * test.Dog.*(..))" id="bellpointcut"/>
 		<!-- 공통기능 동작을 언제 할지,즉 학생의 동작 이전에 적용할 지 이후에 적용할 지  (위치)-->
 			<aop:before method="startBell" pointcut-ref="bellpointcut"/>
+			<aop:after method="endBell" pointcut-ref="bellpointcut"/>
 		</aop:aspect>
 	</aop:config>
 	

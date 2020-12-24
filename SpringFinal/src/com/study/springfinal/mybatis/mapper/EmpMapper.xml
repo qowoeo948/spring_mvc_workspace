@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Emp">
+	<resultMap id="empJoinDept" type="Emp">
+		<id column="empno" 			property="empno"/>
+		<result column="ename" 		property="ename"/>
+		<result column="job" 			property="job"/>
+		<result column="mgr" 			property="mgr"/>
+		<result column="hiredate" 	property="hiredate"/>
+		<result column="sal" 			property="sal"/>
+		<result column="comm" 		property="comm"/>
+		<!-- 자식관점에서는 부모와 1:1 관계로 가져옴  -->
+		<association column="deptno" property="dept" javaType="Dept" select="Dept.selectById"/>
+	</resultMap>
+	
+	<!-- 데이터 한건 가져오기 -->
+	<select id="select" parameterType="int" resultType="Emp">
+		select * from emp where deptno=#{deptno} 
+	</select>
+	
+	<!--사원테이블 정보 가져오기-->
+	<select id="selectAll" resultMap="empJoinDept">
+		select * from emp
+	</select>
+	
+</mapper>

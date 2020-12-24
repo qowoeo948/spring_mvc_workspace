@@ -22,13 +22,13 @@ public class deleteController implements Controller{
 		
 		ModelAndView mav = new ModelAndView();
 		
-		if(result==1) {
+		if(result==0) {
+			//실패한경우 url
+			mav.addObject("msg","삭제실패");
+			mav.setViewName("error/result");
+		}else {
 		//성공한경우 url
 		mav.setViewName("redirect:/board/list");
-		}else {
-		//실패한경우 url
-		mav.addObject("msg","삭제실패");
-		mav.setViewName("error/result");
 		}
 		
 		return mav;

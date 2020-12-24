@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"></property>
+		<property name="mappings">
+			<props>
+				<prop key="/test">testController</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="bell" class="test.Bell"></bean>
+
+	<aop:config>
+		<aop:aspect ref="bell">
+			<aop:pointcut expression="execution(public * test.Dog.*(..))" id="bellpointcut"/>
+			<aop:before method="startBell" pointcut-ref="bellpointcut"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<bean id="student" class="test.Student"></bean>
+	<bean id="dog" class="test.Dog"></bean>
+	
+
+	<bean id="testController" class="test.TestController">
+		<property name="student" ref="student"></property>
+	</bean>
+
+</beans>
