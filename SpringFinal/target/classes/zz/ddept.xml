@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zz.ddept">
+
+	<resultMap type="Dept" id="deptJoinEmp">
+		<id column="deptno" property="deptno"/>
+		<result column="dname" property="dname"/>
+		<result column="loc" property="loc"/>
+		<collection column="deptno" property="empList"
+			javaType="java.util.List" ofType="Emp" select="Emp.select"
+		>
+		</collection>
+	</resultMap>
+
+	<select id="selectAll" resultMap="deptJoinEmp">
+		select deptno,dname,loc from dept
+	</select>	
+	
+	
+
+</mapper>
