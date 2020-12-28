@@ -20,7 +20,5 @@
   	<mapper resource="com/study/springfinal/mybatis/mapper/DeptMapper.xml"/>
   	<mapper resource="com/study/springfinal/mybatis/mapper/EmpMapper.xml"/>
   	<mapper resource="com/study/springfinal/mybatis/mapper/GalleryMapper.xml"/>
-  	<mapper resource="zz/ddept.xml"/>
-  	<mapper resource="zz/eemp.xml"/>
   </mappers>
 </configuration>
