@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+	<!--모든 레코드 가져오기  -->
+	<select id="selectAll" resultType="Notice">
+		select * from notice order by notice_id desc
+	</select>		
+		
+	<!-- 한건 가져오기  -->
+	<select id="select" parameterType="int" resultType="Notice">
+		select * from notice where notice_id = #{notice_id}
+	</select>
+	<!-- 1건 등록  -->
+	<insert id="insert" parameterType="Notice">
+		insert into notice(notice_id, title,writer,content) 
+		values(seq_notice.nextval,#{title},#{writer},#{content})
+	</insert>
+	<!-- 1건 수정  -->
+	<update id="update" parameterType="Notice">
+		update notice set title=#{title}, writer=#{writer}, content=#{content} 
+		where notice_id=#{notice_id}
+	</update>
+	
+	<!-- 1건 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from notice where notice_id=#{notice_id}
+	</delete>
+			
+</mapper>
