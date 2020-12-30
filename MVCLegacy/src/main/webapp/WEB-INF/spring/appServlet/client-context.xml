@@ -22,7 +22,9 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.koreait.mvclegacy.controller.client">
+	<!--이렇게 제외해서 쓸수있음 
 		<context:exclude-filter type="annotation" expression="com.koreait.mvclegacy.controller.admin"/>
+	 -->
 	</context:component-scan>
 	
 	
