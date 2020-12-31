@@ -12,7 +12,7 @@
 	
 	<!-- Application Loggers -->
 	<logger name="com.koreait.fashionshop">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->

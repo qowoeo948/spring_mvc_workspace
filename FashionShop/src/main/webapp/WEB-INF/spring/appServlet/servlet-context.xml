@@ -11,6 +11,28 @@
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
+	
+	<!-- json컨버터 등록 그리고 pom.xml에 Jackson Databind  포함시켜야대-->
+	<beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<beans:property name="messageConverters">
+			<beans:list value-type="java.util.ArrayList">
+				<beans:ref bean="mappingJackson2HttpMessageConverter"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<beans:property name="supportedMediaTypes">
+			<!-- 개발자가 원하는 각종 타입들을 여러개 명시할 수 있다. -->
+			<beans:list>
+				<beans:value>application/json;charset=utf-8</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- 업로드를 위한 설정 주의: id가 정해져 있다 개발자가 맘대로 바꾸면 안됨 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
