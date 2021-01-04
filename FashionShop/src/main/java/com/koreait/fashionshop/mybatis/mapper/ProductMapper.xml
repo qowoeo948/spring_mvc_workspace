@@ -3,7 +3,12 @@
 <mapper namespace="Product">
 	
 	<insert id="insert" parameterType="Product">
-		insert into product(product_id,subcategory_id,product_name,price,brand)
-		values(seq_product.nextval,#{subcategory_id},#{product_name},#{price},#{brand})
+		insert into product(product_id,subcategory_id,product_name,price,brand,detail,filename)
+		values(seq_product.nextval,#{subcategory_id},#{product_name},#{price},#{brand},#{detail},#{filename})
+		<selectKey order="AFTER" keyProperty="product_id" resultType="int">	<!-- insert시킨 다음 바로!! (이후에~) 가져오세요 -->
+			select seq_product.currval as product_id from dual
+		</selectKey>
 	</insert>
+	
+	
 </mapper>

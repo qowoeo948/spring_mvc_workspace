@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Color">
+	<insert id="insert" parameterType="Color">
+		insert into color(color_id, product_id, picker) values(seq_color.nextval, #{product_id}, #{picker})
+	</insert>
+	
+</mapper>

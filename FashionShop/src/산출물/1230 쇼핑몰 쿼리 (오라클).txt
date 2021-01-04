@@ -1,0 +1,147 @@
+select table_name from user_tables;
+
+(topcategory)
+create table topcategory(
+  topcategory_id number primary key,
+  name varchar(25),
+  rank number
+);
+
+(subcategory)
+create table subcategory(
+  subcategory_id number primary key,
+  topcategory_id number,
+  name varchar(25),
+  constraint fk_topcategorysubcategory foreign key(topcategory_id) references topcategory(topcategory_id)
+);
+
+(product)
+create table product(
+  product_id number primary key,
+  subcategory_id number,
+  product_name varchar(30),
+  price number default 0,
+  brand varchar(30),
+  detail clob,
+  constraint fk_subcategoryproduct foreign key(subcategory_id) references subcategory(subcategory_id)
+);
+alter table product add filename varchar(50);
+
+(size)
+create table psize(
+  psize_id number primary key,
+  product_id number,
+  fit varchar(8),
+  constraint fk_productpsize foreign key(product_id) references product(product_id)
+);
+
+(color)
+create table color(
+  color_id number primary key,
+  product_id number,
+  picker varchar(20),
+  constraint fk_productcolor foreign key(product_id) references product(product_id)
+);
+
+(cart)
+create table cart(
+  cart_id number primary key,
+  product_id number,
+  quantity number default 0,
+  constraint fk_productcart foreign key(product_id) references product(product_id)
+);
+
+(score)
+create table score(
+  score_id number primary key,
+  product_id number,
+  star number default 0,
+  constraint fk_productscore foreign key(product_id) references product(product_id)
+);
+
+(image)
+create table image(
+  image_id number primary key,
+  product_id number,
+  filename varchar(40),
+  constraint fk_productimage foreign key(product_id) references product(product_id)
+);
+
+
+------------------------------------------------------------------------시퀀스
+select sequence_name from user_sequences;
+
+
+create sequence  seq_topcategory
+increment by 1
+start with 1;
+create sequence  seq_subcategory
+increment by 1
+start with 1;
+create sequence  seq_product
+increment by 1
+start with 1;
+create sequence  seq_psize
+increment by 1
+start with 1;
+create sequence  seq_color
+increment by 1
+start with 1;
+create sequence  seq_cart
+increment by 1
+start with 1;
+create sequence  seq_score
+increment by 1
+start with 1;
+create sequence  seq_image
+increment by 1
+start with 1;
+
+-----------------------------------------------------------------데이터 채우기
+(상위 카테고리)
+insert into topcategory(topcategory_id,name,rank) values(seq_topcategory.nextval,'top wear',1);
+insert into topcategory(topcategory_id,name,rank) values(seq_topcategory.nextval,'down wear',2);
+insert into topcategory(topcategory_id,name,rank) values(seq_topcategory.nextval,'accessory',3);
+insert into topcategory(topcategory_id,name,rank) values(seq_topcategory.nextval,'shoes',4);
+
+
+(하위 카테고리)
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'가디건');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'티셔츠');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'점퍼');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'니트');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'청바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'반바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'면바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'정장바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'귀걸이');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'목걸이');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'팔찌');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'반지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'운동화');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'구두');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'샌들');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'슬리퍼');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
