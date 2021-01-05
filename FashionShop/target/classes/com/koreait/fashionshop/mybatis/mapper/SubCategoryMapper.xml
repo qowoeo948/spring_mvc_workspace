@@ -7,6 +7,9 @@
       select * from subcategory where topcategory_id=#{topcategory_id}
    </select>
 
-	
+	<!-- 레코드 한건 가져오기 -->
+	<select id="select" parameterType="int" resultType="SubCategory">
+		select *from subcategory where subcategory_id=#{subcategory_id}
+	</select>
 	
 </mapper>
