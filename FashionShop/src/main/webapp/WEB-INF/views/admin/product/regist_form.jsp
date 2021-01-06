@@ -137,7 +137,7 @@ $(function(){
 			if($($(ch)[i]).is(":checked")){
 				psize.push($($(ch)[i]).val());
 			}
-			//console.log(i,"번째 체크박스 상태는 ", $($(ch)[i]).is(":checked"));
+			console.log(i,"번째 체크박스 상태는 ", $($(ch)[i]).is(":checked"));
 		}		
 		console.log("서버에 전송할 사이즈 배열의 구성은 ", psize);
 	});
@@ -187,11 +187,7 @@ function getSubList(obj){
 		}
 	});
 }
-//사이즈 선택시 배열 재구성하기
-function setPsizeArray(){
-	
-	
-}
+
 //상품 등록
 function regist(){
 	/*비동기 전송시, 기존의 form을 이용할수 있을까?  yes!!*/

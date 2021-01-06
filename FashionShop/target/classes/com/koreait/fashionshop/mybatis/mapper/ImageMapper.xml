@@ -10,5 +10,10 @@
 		</selectKey>
 	</insert>
 	
+	<select id="selectByProductId" parameterType="int" resultType="Image">
+		select *from image where product_id=#{product_id}
+	</select>
+	
+	
 	
 </mapper>
