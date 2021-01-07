@@ -28,11 +28,17 @@
  		var formData = $("#cart_form").serialize();	//파라미터를 전송할 수 있는 상태의  문자열로 나열해줌. 
  		
  		$.ajax({
- 			url:"/shop/cart/regist",
+ 			url:"/async/shop/cart/regist",
 			type:"post",
 			data: formData,
 			success:function(responseData){
-				alert(responseData);
+			if(responseData.resultCode==1){
+				if(confirm(responseData.msg+"\n장바구니에 담긴 상품을 보러갈까요?")){
+					location.href=responseData.url;
+				}
+			}else{
+				alert(responseData.msg);
+			}
 			}
  		});
  		

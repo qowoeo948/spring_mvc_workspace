@@ -3,6 +3,7 @@ package com.koreait.fashionshop.model.payment.service;
 import java.util.List;
 
 import com.koreait.fashionshop.model.domain.Cart;
+import com.koreait.fashionshop.model.domain.Member;
 
 public interface PaymentService {
 	//장바구니 관련 업무
@@ -10,8 +11,9 @@ public interface PaymentService {
 	public List selectCartList(int member_id);		//특정 회원의 장바구니 내역
 	public Cart selectCart(int cart_id);
 	public void insert(Cart cart);
-	public void update(Cart cart);
-	public void delete(Cart cart);			//회원id에 속한 데이터 삭제할 예정 
+	public void update(List<Cart> cartList);	//일괄 수정 한건이 아니라 다량의 수량임
+	public void delete(Cart cart);			//pk 속한 데이터 삭제할 예정 
+	public void delete(Member member);			//회원id에 속한 데이터 삭제할 예정 
 	
 	
 	//결제 업무
