@@ -4,9 +4,13 @@
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
@@ -49,8 +53,52 @@
 	<!-- 모델 영역은 모든 서블릿에서 공용으로 사용할 예정이므로, ServletContext수준에서 어플리케이션이 가동될 때 부터 등록 되어 있어야 한다.
 		컨트롤러는 메모리에 올라오면 안되니까 컨트롤러는 제외하자
 	 -->
-	<context:component-scan base-package="com.koreait.fashionshop" >
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-	</context:component-scan>
+	<context:component-scan base-package="com.koreait.fashionshop.model" />
+		
+	
+	
+	
+	<!-- DI와 같이 객체를 인터페이스로 보유하는 방식이 아니라 공통코드를 외부로 완전히 분리 시킨 후
+			원하는 시점에, 공통코드를 동작시키는 관점 지향 프로그래밍을 가리켜 AOP라 한다.
+	 -->
+	 <!-- 공통 코드는 이미 어노테이션(component)로 등록되어 있다..Bell.java -->
+		<!-- 어느 시점에, 어떤 메서드 호출시 공통코드를 동작시킬지를 xml로 서술해보자 -->
+		<aop:config>
+			<aop:aspect id="bellAspect" ref="bell">
+				<!-- 어떤 메서드 실행시 관여할 지 서술 (맨뒤에 ..-> 모든 클래스,*->모든메서드,**->모든 매개변수, ..은 매개변수가 몇개든 상관이없다)  -->
+				<aop:pointcut expression="execution(public * com.koreait.fashionshop.model.bank.repository..*(**))" id="bellPointcut"/>
+				<aop:after method="sound" pointcut-ref="bellPointcut"/>
+			</aop:aspect>
+		</aop:config>
+		
+		<!-- 방금 배운 AOP를 이용하여 트랜잭션에 응용해보자!! -->		
+		<!-- 트랜잭션 설정 namespace -> tx 설정 -->
+		<tx:advice id="txAdvice" transaction-manager="dataSourceTransactionManager">
+			<tx:attributes>
+			<!-- 
+				<tx:method name="send" propagation="REQUIRED" rollback-for="Exception"/>
+			 -->
+				<tx:method name="registOrder" propagation="REQUIRED" rollback-for="Exception"/>
+			</tx:attributes>
+		</tx:advice>
+		
+		<!-- 트랜잭션을 적용 할 대상인 서비스 등록 -->
+		<!-- 
+		<aop:config>
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.model.bank.service..*(..))" id="txPointcut"/>
+			<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+		</aop:config>
+		 -->
+		
+		<aop:config>
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.model.payment.service..*(..))" id="txPointcut"/>
+			<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+		</aop:config>
+		
+		
+		
+		
+		
+		
 		
 </beans>

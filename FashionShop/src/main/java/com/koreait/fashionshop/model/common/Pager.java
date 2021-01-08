@@ -2,7 +2,7 @@
  * paging 처리를 재사용성을 높인 클래스로 정의
  * 
  * */
-package com.koreait.fashionshop.common;
+package com.koreait.fashionshop.model.common;
 
 import java.util.List;
 

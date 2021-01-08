@@ -1,4 +1,4 @@
-<%@page import="com.koreait.fashionshop.common.Formatter"%>
+<%@page import="com.koreait.fashionshop.model.common.Formatter"%>
 <%@page import="com.koreait.fashionshop.model.domain.Product"%>
 <%@ page contentType="text/html;charset=utf-8"%>
 <%

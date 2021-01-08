@@ -1,4 +1,4 @@
-package com.koreait.fashionshop.common;
+package com.koreait.fashionshop.model.common;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -18,7 +18,7 @@ public class MailSender {
 	String host = "smtp.gmail.com";
 	String user = "qowoeo948@gmail.com";
 	String password = " "; //크롬브라우저 보안에서 인증받은 비번넣기
-	Properties props = new Properties();
+	Properties props = new Properties(); 
 	
 	public void send(String to, String title, String content) throws MailSendException{
 		props.put("mail.smtp.host", host);

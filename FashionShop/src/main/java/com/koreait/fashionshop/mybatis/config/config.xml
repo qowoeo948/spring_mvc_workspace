@@ -14,6 +14,13 @@
 		<typeAlias type="com.koreait.fashionshop.model.domain.Member" alias="Member"/>
 		
 		<typeAlias type="com.koreait.fashionshop.model.domain.Cart" alias="Cart"/>
+
+		<!-- 주문관련 -->
+		<typeAlias type="com.koreait.fashionshop.model.domain.OrderState" alias="OrderState"/>
+		<typeAlias type="com.koreait.fashionshop.model.domain.Paymethod" alias="Paymethod"/>
+		<typeAlias type="com.koreait.fashionshop.model.domain.OrderSummary" alias="OrderSummary"/>
+		<typeAlias type="com.koreait.fashionshop.model.domain.OrderDetail" alias="OrderDetail"/>
+		<typeAlias type="com.koreait.fashionshop.model.domain.Receiver" alias="Receiver"/>
 		
 	</typeAliases>
   <mappers>
@@ -27,5 +34,13 @@
     <mapper resource="com/koreait/fashionshop/mybatis/mapper/MemberMapper.xml"/>
 
     <mapper resource="com/koreait/fashionshop/mybatis/mapper/CartMapper.xml"/>
+    
+    <!-- 주문관련 -->
+    <mapper resource="com/koreait/fashionshop/mybatis/mapper/OrderStateMapper.xml"/>
+    <mapper resource="com/koreait/fashionshop/mybatis/mapper/PaymethodMapper.xml"/>
+    <mapper resource="com/koreait/fashionshop/mybatis/mapper/OrderSummaryMapper.xml"/>
+    <mapper resource="com/koreait/fashionshop/mybatis/mapper/OrderDetailMapper.xml"/>
+    <mapper resource="com/koreait/fashionshop/mybatis/mapper/ReceiverMapper.xml"/>
+    
   </mappers>
 </configuration>

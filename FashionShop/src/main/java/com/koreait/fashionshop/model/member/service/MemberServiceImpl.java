@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.koreait.fashionshop.common.MailSender;
-import com.koreait.fashionshop.common.SecureManager;
 import com.koreait.fashionshop.exception.MailSendException;
 import com.koreait.fashionshop.exception.MemberNotFoundException;
 import com.koreait.fashionshop.exception.MemberRegistException;
+import com.koreait.fashionshop.model.common.MailSender;
+import com.koreait.fashionshop.model.common.SecureManager;
 import com.koreait.fashionshop.model.domain.Member;
 import com.koreait.fashionshop.model.member.repository.MemberDAO;
 

@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.koreait.fashionshop.common.MessageData;
 import com.koreait.fashionshop.exception.MailSendException;
 import com.koreait.fashionshop.exception.MemberNotFoundException;
 import com.koreait.fashionshop.exception.MemberRegistException;
+import com.koreait.fashionshop.model.common.MessageData;
 import com.koreait.fashionshop.model.domain.Member;
 import com.koreait.fashionshop.model.member.service.MemberService;
 import com.koreait.fashionshop.model.product.service.TopCategoryService;

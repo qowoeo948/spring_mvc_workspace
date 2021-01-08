@@ -2,7 +2,7 @@ package com.koreait.fashionshop.model.product.service;
 
 import java.util.List;
 
-import com.koreait.fashionshop.common.FileManager;
+import com.koreait.fashionshop.model.common.FileManager;
 import com.koreait.fashionshop.model.domain.Product;
 
 public interface ProductService {

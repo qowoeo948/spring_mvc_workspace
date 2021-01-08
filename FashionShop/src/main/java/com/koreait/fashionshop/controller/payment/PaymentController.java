@@ -10,18 +10,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.koreait.fashionshop.common.MessageData;
 import com.koreait.fashionshop.exception.CartException;
 import com.koreait.fashionshop.exception.LoginRequiredException;
+import com.koreait.fashionshop.model.common.MessageData;
 import com.koreait.fashionshop.model.domain.Cart;
 import com.koreait.fashionshop.model.domain.Member;
+import com.koreait.fashionshop.model.domain.OrderSummary;
+import com.koreait.fashionshop.model.domain.Receiver;
 import com.koreait.fashionshop.model.payment.service.PaymentService;
 import com.koreait.fashionshop.model.product.service.TopCategoryService;
 @Controller
@@ -29,7 +34,7 @@ public class PaymentController {
 	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 	
 	@Autowired
-	private PaymentService PaymentService;
+	private PaymentService paymentService;
 	
 	@Autowired
 	private TopCategoryService topCategoryService;
@@ -44,7 +49,7 @@ public class PaymentController {
 		logger.debug("quantity "+cart.getQuantity());
 		
 		cart.setMember_id(member.getMember_id());
-		PaymentService.insert(cart);
+		paymentService.insert(cart);
 		
 		//MessageConverter에 의해 VO는 JSON형태로 응답되어질 수 있다.
 		//이렇게하면 저절로 json 문자열로 바꿔서 전송해줘 눈물날 일이야
@@ -68,7 +73,7 @@ public class PaymentController {
 		
 		Member member = (Member)session.getAttribute("member");
 		List topList = topCategoryService.selectAll();
-		List cartList = PaymentService.selectCartList(member.getMember_id());
+		List cartList = paymentService.selectCartList(member.getMember_id());
 		
 		
 		ModelAndView mav = new ModelAndView("shop/cart/cart_list");
@@ -85,7 +90,7 @@ public class PaymentController {
 		if(session.getAttribute("member")==null) {
 			throw new LoginRequiredException("로그인이 필요한 서비스입니다.");
 		}
-		PaymentService.delete((Member)session.getAttribute("member"));
+		paymentService.delete((Member)session.getAttribute("member"));
 		
 		return "redirect:/shop/cart/list";
 	}
@@ -105,7 +110,7 @@ public class PaymentController {
 		cartList.add(cart);
 		}
 		
-		PaymentService.update(cartList);
+		paymentService.update(cartList);
 		
 		//수정되었다는 메세지를 보고싶다면 message.jsp로 응답하자
 		MessageData messageData = new MessageData();
@@ -119,6 +124,40 @@ public class PaymentController {
 		return mav;
 	}
 	
+	
+	//체크아웃 페이지 요청 
+	@GetMapping("/shop/payment/form")
+	public String payForm(Model model,HttpSession session) {
+		List topList = topCategoryService.selectAll();
+		model.addAttribute("topList", topList); //ModelAndView에서의 Model만 사용..
+		
+		//결제수단 가져오기 
+		List paymethodList = paymentService.selectPaymethodList();
+		model.addAttribute("paymethodList", paymethodList);
+		
+		//장바구니 정보 가져오기
+		Member member = (Member)session.getAttribute("member");
+		List cartList = paymentService.selectCartList(member.getMember_id());
+		model.addAttribute("cartList", cartList);
+		
+		return "shop/payment/checkout";
+	}
+	
+	@PostMapping("/shop/payment/regist")
+	public String pay(HttpSession session, OrderSummary orderSummary, Receiver receiver) {
+		logger.debug("받을 사람 이름 "+receiver.getReceiver_name());
+		logger.debug("받을 사람 연락처 "+receiver.getReceiver_phone());
+		logger.debug("받을 사람 주소 "+receiver.getReceiver_addr());
+		logger.debug("결제방법은 "+orderSummary.getPaymethod_id());
+		logger.debug("total_price "+orderSummary.getTotal_price());
+		logger.debug("total_pay "+orderSummary.getTotal_pay());
+		Member member=(Member)session.getAttribute("member");
+		orderSummary.setMember_id(member.getMember_id()); //회원 pk
+		
+		paymentService.registOrder(orderSummary, receiver);
+		
+		return "";
+	}
 	
 	
 	

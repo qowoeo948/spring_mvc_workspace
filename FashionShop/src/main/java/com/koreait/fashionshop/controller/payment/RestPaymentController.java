@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.koreait.fashionshop.common.MessageData;
 import com.koreait.fashionshop.exception.CartException;
 import com.koreait.fashionshop.exception.LoginRequiredException;
+import com.koreait.fashionshop.model.common.MessageData;
 import com.koreait.fashionshop.model.domain.Cart;
 import com.koreait.fashionshop.model.domain.Member;
 import com.koreait.fashionshop.model.payment.service.PaymentService;

@@ -164,6 +164,15 @@
    		 <version>1.5.0-b01</version>
 	</dependency>
 	
+	<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+	<dependency>
+    	<groupId>org.aspectj</groupId>
+    	<artifactId>aspectjweaver</artifactId>
+    	<version>1.8.14</version>
+    	<scope>runtime</scope>
+	</dependency>
+	
+	
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
