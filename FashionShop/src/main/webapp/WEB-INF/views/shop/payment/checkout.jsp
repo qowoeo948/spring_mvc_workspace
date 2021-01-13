@@ -1,6 +1,5 @@
 <%@page import="com.koreait.fashionshop.model.domain.Member"%>
 <%@page import="com.koreait.fashionshop.model.domain.Paymethod"%>
-<%@page import="com.koreait.fashionshop.model.common.Formatter"%>
 <%@page import="com.koreait.fashionshop.model.domain.Cart"%>
 <%@ page contentType="text/html;charset=utf-8"%>
 <%

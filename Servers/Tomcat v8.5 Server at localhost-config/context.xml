@@ -20,17 +20,24 @@
     <!-- web application will be reloaded.                                   -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
     <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
-
-	<!-- 오라클 버전-->
+	
 	<ResourceLink type="javax.sql.DataSource"
                       name="jdbc/oracle"
-                      global="jdbc/oracle" />                      
+                      global="jdbc/oracle" />  
+	<!-- 
+
+	<ResourceLink type="javax.sql.DataSource"
+                      name="jdbc/oracle2"
+                      global="jdbc/oracle2" />                      
+	 -->
+
 	 
-	<!-- mysql버전
+	<!-- 
 	<ResourceLink type="javax.sql.DataSource"
                       name="jdbc/mysql"
                       global="jdbc/mysql" />
 	 -->
+	
 
  
 </Context>

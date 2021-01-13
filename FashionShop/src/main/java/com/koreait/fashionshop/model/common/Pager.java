@@ -8,9 +8,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Pager {
+	private List list;
 	private int totalRecord;	//총 레코드 수 
-	private int pageSize=10;	// 페이지당 보여질 레코드 수 
+	private int pageSize=4;	// 페이지당 보여질 레코드 수 
 	private int totalPage;
 	private int blockSize=10; //블럭 당 보여질 페이지 수
 	private int currentPage=1;
@@ -23,6 +27,8 @@ public class Pager {
 	//선언된 변수 초기화
 	//실시간으로 변하는 값들은 생성자에서 바뀌게 만들어줘야함
 	public void init(HttpServletRequest request, List list) {
+		this.list = list;	//보관
+		
 		totalRecord = list.size();
 		totalPage=(int)Math.ceil((float)totalRecord/pageSize);
 		
@@ -37,6 +43,10 @@ public class Pager {
 		curPos=(currentPage-1)*pageSize;	//페이지 당 List내에서의 시작 index
 		num=totalRecord-curPos;	//페이지당 시작 번호
 		
+	}
+	
+	public List getList() {
+		return list;
 	}
 
 	public int getTotalRecord() {

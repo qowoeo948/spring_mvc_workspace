@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class ProductController implements ServletContextAware{
 	
 	//상위카테고리 가져오기		(관리자용)
 	@RequestMapping(value="/admin/product/registform",method=RequestMethod.GET)
-	public ModelAndView getTopList() {
+	public ModelAndView getTopList(HttpServletRequest request) {
 		//3단계 업무: 로직객체에 일시킨다.
 		List topList = topCategoryService.selectAll();
 		
@@ -73,7 +74,7 @@ public class ProductController implements ServletContextAware{
 	//스프링에서는 java객체와 Json간 변환(converting)을 자동으로 처리해주는 라이브러리를 지원한다.
 	@RequestMapping(value="/admin/product/sublist", method=RequestMethod.GET)
 	@ResponseBody
-	public List getSubList(int topcategory_id) {
+	public List getSubList(int topcategory_id,HttpServletRequest request) {
 		List<SubCategory> subList = subCategoryService.selectAllById(topcategory_id);
 		return  subList;
 	}
@@ -112,7 +113,7 @@ public class ProductController implements ServletContextAware{
 
 	//상품목록
 	@RequestMapping(value="/admin/product/list", method=RequestMethod.GET )
-	public ModelAndView getProductList() {
+	public ModelAndView getProductList(HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("admin/product/product_list");
 		List productList = productService.selectAll();
 		mav.addObject("productList", productList);
@@ -130,7 +131,7 @@ public class ProductController implements ServletContextAware{
 	//상품등록
 	@RequestMapping(value="/admin/product/regist", method=RequestMethod.POST, produces="text/html;charset=utf8")
 	@ResponseBody		//페이지 응답이 아니라 text응답이다~
-	public String registProduct(Product product,String[] test) {
+	public String registProduct(Product product,String[] test,HttpServletRequest request) {
 		logger.debug("하위카테고리 "+product.getSubCategory().getSubcategory_id());
 		logger.debug("상품명 "+product.getProduct_name());
 		logger.debug("가격 "+product.getPrice());
@@ -186,31 +187,24 @@ public class ProductController implements ServletContextAware{
 	
 	//상품목록 요청 처리
 	@RequestMapping(value="/shop/product/list",method=RequestMethod.GET)
-	public ModelAndView getShopProductList(int subcategory_id) {		//하위카테고리의 id가 날라와야됨
-		//상품카테고리 목록
-		List topList = topCategoryService.selectAll(); 
-		
+	public ModelAndView getShopProductList(int subcategory_id,HttpServletRequest request) {		//하위카테고리의 id가 날라와야됨
 		//상품목록
 		List productList = productService.selectById(subcategory_id);	
 
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("topList",topList);
 		mav.addObject("productList",productList);
-		
 		mav.setViewName("shop/product/list");
 		return mav;
 	}
 	
 	//상품 상세보기 요청
 	@RequestMapping(value="/shop/product/detail",method=RequestMethod.GET)
-	public ModelAndView getShopProductDetail(int product_id) {
-		List topList = topCategoryService.selectAll(); 
+	public ModelAndView getShopProductDetail(int product_id,HttpServletRequest request) {
 		
 		//상품 1건 가져오기
 		Product product = productService.select(product_id);
 		
 		ModelAndView mav = new ModelAndView("shop/product/detail");
-		mav.addObject("topList",topList);
 		mav.addObject("product",product);
 		
 		return mav;

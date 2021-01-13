@@ -3,9 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
@@ -46,5 +48,35 @@
 	<context:component-scan base-package="com.koreait.fashionshop.controller" />
 	
 	
+	<!-- 설정파일을 열어서, 메인 호출시 벨을 울리는 AOP설정 -->
+	<beans:bean id="bell" class="com.koreait.fashionshop.model.common.Bell"/>
+	<beans:bean id="memberSessionCheckAspect" class="com.koreait.fashionshop.aop.MemberSessionCheckAspect"/>
 	
+	<!-- 상위카테고리를 가져오는 공통코드 적용 aop -->
+	<beans:bean id="globalDataAspect" class="com.koreait.fashionshop.aop.GlobalDataAspect" />
+	
+	<aop:config>
+	<!-- 어떤 메서드 실행시 관여할 지 서술 (맨뒤에 ..-> 모든 클래스,*->모든메서드,**->모든 매개변수, ..은 매개변수가 몇개든 상관이없다)  -->
+	<!-- 
+		<aop:aspect id="bellAspect" ref="bell">
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.controller.main..*(..))" id="bellPointcut"/>
+			<aop:before method="sound" pointcut-ref="bellPointcut"/>
+		</aop:aspect>
+	 -->
+		<!-- 어떤 메서드 실행시 관여할 지 서술 (맨뒤에 ..-> 모든 클래스,*->모든메서드,**->모든 매개변수, ..은 매개변수가 몇개든 상관이없다)  -->
+		<aop:aspect id="sessionCheckAspect" ref="memberSessionCheckAspect">
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.controller.payment..*(..))
+						||execution(public * com.koreait.fashionshop.controller.cs..*(..))" id="sessionPointcut"/>
+			<aop:around method="sessionCheck" pointcut-ref="sessionPointcut"/>
+		</aop:aspect>
+		
+		<aop:aspect id="categoryAspect" ref="globalDataAspect">
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.controller..*(..))" id="categoryPointcut"/>
+			<aop:around method="getGlobalData" pointcut-ref="categoryPointcut"/>
+			
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- 글로벌 예외 객체 추가   GlobalExceptionHandler-->
+	<beans:bean id="globalExceptionHandler" class="com.koreait.fashionshop.aop.GlobalExceptionHandler"/>
 </beans:beans>

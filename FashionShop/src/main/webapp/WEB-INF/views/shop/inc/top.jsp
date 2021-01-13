@@ -123,7 +123,7 @@
                                             <li class="nav-item">
                                             	<a class="nav-link" href="/shop/cart/list"><span class="karl-level">3</span>Cart</a>
                                             </li>
-                                            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="/shop/cs/qna/list">Contact</a></li>
                                             <li class="nav-item"><a class="nav-link" href="/shop/member/registForm">SignUp</a></li>
                                             <li class="nav-item">
                                             

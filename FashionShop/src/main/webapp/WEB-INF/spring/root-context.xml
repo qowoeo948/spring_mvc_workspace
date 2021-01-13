@@ -63,13 +63,17 @@
 	 -->
 	 <!-- 공통 코드는 이미 어노테이션(component)로 등록되어 있다..Bell.java -->
 		<!-- 어느 시점에, 어떤 메서드 호출시 공통코드를 동작시킬지를 xml로 서술해보자 -->
+		<!-- 
+		 -->
+		<!-- 어떤 메서드 실행시 관여할 지 서술 (맨뒤에 ..-> 모든 클래스,*->모든메서드,**->모든 매개변수, ..은 매개변수가 몇개든 상관이없다)  -->
+		<!-- 
 		<aop:config>
 			<aop:aspect id="bellAspect" ref="bell">
-				<!-- 어떤 메서드 실행시 관여할 지 서술 (맨뒤에 ..-> 모든 클래스,*->모든메서드,**->모든 매개변수, ..은 매개변수가 몇개든 상관이없다)  -->
 				<aop:pointcut expression="execution(public * com.koreait.fashionshop.model.bank.repository..*(**))" id="bellPointcut"/>
 				<aop:after method="sound" pointcut-ref="bellPointcut"/>
 			</aop:aspect>
 		</aop:config>
+		 -->
 		
 		<!-- 방금 배운 AOP를 이용하여 트랜잭션에 응용해보자!! -->		
 		<!-- 트랜잭션 설정 namespace -> tx 설정 -->
@@ -94,7 +98,6 @@
 			<aop:pointcut expression="execution(public * com.koreait.fashionshop.model.payment.service..*(..))" id="txPointcut"/>
 			<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
 		</aop:config>
-		
 		
 		
 		
