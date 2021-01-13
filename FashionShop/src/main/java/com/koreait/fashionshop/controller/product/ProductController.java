@@ -12,14 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.koreait.fashionshop.exception.ProductRegistException;
+import com.koreait.fashionshop.exception.UploadFailException;
 import com.koreait.fashionshop.model.common.FileManager;
+import com.koreait.fashionshop.model.common.MessageData;
 import com.koreait.fashionshop.model.domain.Product;
 import com.koreait.fashionshop.model.domain.Psize;
 import com.koreait.fashionshop.model.domain.SubCategory;
@@ -109,6 +114,28 @@ public class ProductController implements ServletContextAware{
 	      return sb.toString();
 	   }
 	 * */
+	
+	//엑셀 대량 등록폼
+	@GetMapping("/admin/product/excel/registform")
+	public String getExcelForm(HttpServletRequest request) {
+		
+		return "admin/product/excel_form";
+	}
+	
+	//엑셀에 의한 상품등록 요청 처리
+	@RequestMapping(value="admin/product/excel/regist",method=RequestMethod.POST,produces="text/html;charset=utf8")
+	@ResponseBody		//비동기 이므로
+	public String registByExcel(MultipartFile dump,HttpServletRequest request) {
+		String path = fileManager.getSaveBasicDir()+File.separator+dump.getOriginalFilename();	//저장할 파일명
+		fileManager.saveFile(path, dump);
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append("\"result\":1,");
+		sb.append("\"msg\":\"상품등록성공\"");
+		sb.append("}");
+		return sb.toString();
+	}
 	 
 
 	//상품목록
@@ -165,19 +192,6 @@ public class ProductController implements ServletContextAware{
 	//상품 삭제
 	
 	
-	//예외처리
-	//위의 메서드 중에서 하나라도 예외가 발생하면, 아래의 핸들러가 동작
-	@ExceptionHandler(ProductRegistException.class)
-	@ResponseBody
-	public String handleException(ProductRegistException e) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		sb.append("\"result\":0");
-		sb.append("\"msg\":\""+e.getMessage()+"\"");
-		sb.append("}");
-		
-		return sb.toString();
-	}
 	
 	
 	
@@ -208,6 +222,35 @@ public class ProductController implements ServletContextAware{
 		mav.addObject("product",product);
 		
 		return mav;
+	}
+	
+
+	//예외처리
+	//위의 메서드 중에서 하나라도 예외가 발생하면, 아래의 핸들러가 동작
+	@ExceptionHandler(ProductRegistException.class)
+	@ResponseBody
+	public String handleException(ProductRegistException e) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append("\"result\":0");
+		sb.append("\"msg\":\""+e.getMessage()+"\"");
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
+
+	
+	@ExceptionHandler(UploadFailException.class)
+	@ResponseBody
+	public String handleException(UploadFailException e) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append("\"result\":0");
+		sb.append("\"msg\":\""+e.getMessage()+"\"");
+		sb.append("}");
+		
+		return sb.toString();
 	}
 	
 }

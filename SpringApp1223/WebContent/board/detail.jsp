@@ -89,7 +89,7 @@ function 	del(){
 //댓글 목록 가져오기 
 function getCommentList(){
 	$.ajax({
-		url:"/comment/list.do", 
+		url:"/shop/qna/comment/list, 
 		type:"get", 
 		data:{
 			board_id : <%=board.getBoard_id()%>
