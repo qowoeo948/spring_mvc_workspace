@@ -147,7 +147,7 @@ function registComment(){
 
 <h3>Detail Form</h3>
 
-<div class="container">
+<div class="container" >
   <form>
   	
     <input type="hidden" name="board_id" value="<%=board.getBoard_id()%>">

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.koreait.fashionshop.controller.product.ProductController;
+import com.koreait.fashionshop.client.controller.product.ProductController;
 import com.koreait.fashionshop.exception.ProductRegistException;
 import com.koreait.fashionshop.model.common.FileManager;
 import com.koreait.fashionshop.model.domain.Color;

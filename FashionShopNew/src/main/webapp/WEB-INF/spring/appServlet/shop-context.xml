@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	<context:component-scan base-package="com.koreait.fashionshop.client.controller"/>
+	
+	<beans:bean id="memberSessionCheckAspect" class="com.koreait.fashionshop.client.aop.MemberSessionCheckAspect"/>
+	<beans:bean id="globalDataAspect" class="com.koreait.fashionshop.client.aop.GlobalDataAspect"/>
+	
+	<aop:config>
+		<aop:aspect id="sessionCheckAspect" ref="memberSessionCheckAspect">
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.client.controller.payment..*(..))
+			||execution(public * com.koreait.fashionshop.client.controller.cs..*(..))" id="sessionPointcut"/>
+			<aop:around method="sessionCheck" pointcut-ref="sessionPointcut"/>
+		</aop:aspect>
+	
+		<aop:aspect id="categoryAspect" ref="globalDataAspect">
+			<!-- 아래와 같은패턴을 지정하면, admin컨트롤러를 올리지 않았다고 해도, 메서드 호출시  -->
+			<aop:pointcut expression="execution(public * com.koreait.fashionshop.client.controller..*(..))" id="categoryPointcut"/>
+			<aop:around method="getGlobalData" pointcut-ref="categoryPointcut"/>
+		</aop:aspect>
+						
+	</aop:config>		
+
+	<!-- 글로벌 예외객체 추가  -->
+	<beans:bean id="globalExceptionHandler" class="com.koreait.fashionshop.client.aop.GlobalExceptionHandler"/>
+	
+</beans:beans>
+
+
+
+
+

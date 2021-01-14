@@ -1,0 +1,218 @@
+create table  topcategory(
+   topcategory_id  number primary key 
+ , name varchar(25) 
+ , rank number 
+);
+create table subcategory(
+  subcategory_id number primary key
+ , topcategory_id number
+ , name varchar(25)
+ , constraint fk_topcategorysubcategory  foreign key(topcategory_id) references topcategory(topcategory_id)
+);
+create table product(
+ product_id number primary key
+ , subcategory_id number
+ , product_name varchar(30)
+ , price number default 0
+ , brand varchar(39)
+ , detail clob
+ , constraint fk_subcategoryproduct foreign key(subcategory_id) references subcategory(subcategory_id)
+);
+
+create table psize(
+   psize_id number primary key
+ , product_id number 
+ , fit varchar(8)
+ , constraint fk_productpsize foreign key(product_id) references product(product_id) 
+);
+create table color(
+   color_id number primary key
+ , product_id number 
+ , picker varchar(20)
+ , constraint fk_productcolor foreign key(product_id) references product(product_id) 
+);
+
+create table cart(
+   cart_id number primary key
+ , product_id number 
+ , member_id number
+ , quantity number default 0
+ , constraint fk_productcart foreign key(product_id) references product(product_id) 
+ , constraint fk_membercart foreign key(member_id) references member(member_id) 
+);
+
+drop table score;
+create table score(
+   score_id number primary key
+ , product_id number 
+ , star number default 0
+ , constraint fk_productscore foreign key(product_id) references product(product_id) 
+);
+create table image(
+   image_id number primary key
+ , product_id number 
+ , filename varchar(40)
+ , constraint fk_productimage foreign key(product_id) references product(product_id) 
+);
+
+create sequence  seq_topcategory
+increment by 1
+start with 1;
+create sequence  seq_subcategory
+increment by 1
+start with 1;
+create sequence  seq_product
+increment by 1
+start with 1;
+create sequence  seq_psize
+increment by 1
+start with 1;
+create sequence  seq_color
+increment by 1
+start with 1;
+create sequence  seq_cart
+increment by 1
+start with 1;
+create sequence  seq_image
+increment by 1
+start with 1;
+create sequence  seq_score
+increment by 1
+start with 1;
+
+insert into topcategory(topcategory_id, name, rank) values(seq_topcategory.nextval,'top wear',1);
+insert into topcategory(topcategory_id, name, rank) values(seq_topcategory.nextval,'down wear',2);
+insert into topcategory(topcategory_id, name, rank) values(seq_topcategory.nextval,'accessory',3);
+insert into topcategory(topcategory_id, name, rank) values(seq_topcategory.nextval,'shoes',4);
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'가디건');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'티셔츠');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'점퍼');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,1,'니트');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'청바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'반바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'면바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,2,'정장바지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'귀걸이');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'목걸이');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'팔찌');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,3,'반지');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'운동화');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'구두');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'샌들');
+insert into subcategory(subcategory_id, topcategory_id,name) values(seq_subcategory.nextval,4,'슬리퍼');
+
+create table member(
+	member_id number primary key
+	, user_id varchar(20)	
+	, name  varchar(20)	
+	, password varchar(20)
+	, email_id varchar(20)	
+	, email_server	 varchar(20)
+	, zipcode	 varchar(10)
+	, addr varchar(150)
+	, regdate  date default sysdate
+);
+create sequence seq_member
+increment by 1
+start with 1;
+
+
+AOP 트랜잭션 실습을 위한 테이블 
+
+create  table  kbank(
+	  kbank_id number primary key 
+	, total number default 0
+);
+create sequence  seq_kbank
+increment by 1
+start with 1;
+
+create  table  sbank(
+	  sbank_id number primary key 
+	, total number default 0
+);
+create sequence  seq_sbank
+increment by 1
+start with 1;
+
+
+#주문관련 테이블 
+create table order_state(
+	order_state_id number primary key 
+	, state varchar(20)
+);
+
+create table paymethod(
+	paymethod_id number primary key 
+	, method varchar(20)
+);
+
+order_summary 테이블 다시 만들고 싶으신 분은 drop을 3개하면 됨
+drop table receiver;
+drop table order_detail;
+drop table order_summary; 
+
+create table  order_summary(
+	order_summary_id number primary key 
+	, member_id number 
+	, total_price number default 0 
+	, total_pay number default 0 
+	, orderdate  date default sysdate 
+	, order_state_id number 
+	, paymethod_id number
+	, constraint fk_order_state_order_summary foreign key(order_state_id) references order_state(order_state_id)	
+	, constraint fk_member_order_summary foreign key(member_id) references member(member_id)
+	, constraint fk_paymethod_order_summary foreign key(paymethod_id) references paymethod(paymethod_id)
+);
+
+
+create table receiver(
+   receiver_id number primary key 
+ , order_summary_id number 
+ , receiver_name varchar(20)
+ , receiver_addr varchar(100)
+ , receiver_phone  varchar(13)
+ , constraint fk_order_summary_receiver 
+		foreign key(order_summary_id) references order_summary(order_summary_id)
+);
+
+create table order_detail(
+	order_detail_id number primary key 
+ 	, order_summary_id number 
+ 	, product_id number 
+ 	, price number default 0 
+ 	, quantity number default 0 
+ 	, color varchar(10)
+ 	, constraint fk_order_summary_order_detail
+		foreign key(order_summary_id) references order_summary(order_summary_id)
+ 	, constraint fk_product_order_detail
+		foreign key(product_id) references product(product_id)
+);
+
+create sequence  seq_order_state
+increment by 1
+start with 1;
+
+create sequence  seq_paymethod
+increment by 1
+start with 1;
+
+create sequence  seq_order_summary
+increment by 1
+start with 1;
+
+create sequence  seq_receiver
+increment by 1
+start with 1;
+
+create sequence  seq_order_detail
+increment by 1
+start with 1;
+
+
+
+
+
+
+
+

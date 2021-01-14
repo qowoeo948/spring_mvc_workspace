@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product">
+	<!-- 상품과 연계된 부모를같이 가져오자 , 상품입장에서는 부모와 1:1 관계이다 (association) -->
+	
+	
+	<resultMap id="productSubcategoryMap" type="Product">
+		<id column="product_id" 					property="product_id"/>
+		<result column="product_name" 		property="product_name"/>
+		<result column="price" 						property="price"/>
+		<result column="brand" 					property="brand"/>
+		<result column="detail" 					property="detail"/>
+		<result column="filename" 				property="filename"/>
+		<!-- 실행타임에 부모의 레코드 한건을 조회하여 Product안의 SubCategory에 채워넣는다 
+		결국: join한 결과와 같다 -->
+		<association column="subcategory_id" 
+			property="subCategory" 
+			javaType="SubCategory" 
+			select="SubCategory.select"/>
+	</resultMap>
+	
+	<select id="selectAll" resultMap="productSubcategoryMap">
+		select * from product order by product_id desc
+	</select>
+	
+	<!-- 상품등록 -->	
+	<insert id="insert" parameterType="Product">
+		insert into product(product_id, subcategory_id, product_name, price, brand,detail,filename)
+		values(seq_product.nextval, #{subCategory.subcategory_id}, #{product_name}, #{price}, #{brand}, #{detail},#{filename})
+		<selectKey order="AFTER" keyProperty="product_id" resultType="int">
+			select seq_product.currval as product_id from dual
+		</selectKey>
+	</insert>
+	
+	<!--지정한 하위 카테고리에 소속된 모든 상품 가져오기  -->
+	<select id="selectBySubCategoryId" parameterType="int" resultType="Product">
+		select * from product where subcategory_id=#{subcategory_id}
+	</select>	
+	
+	
+	
+	
+	<!-- 상품 상세보기 -->
+	<resultMap id="joinPsizeColorScoreImage" type="Product">
+		<id column="product_id" 					property="product_id"/>
+		<result column="product_name" 		property="product_name"/>
+		<result column="price" 						property="price"/>
+		<result column="brand" 					property="brand"/>
+		<result column="detail" 					property="detail"/>
+		<result column="filename" 				property="filename"/>
+		
+		<association 
+			column="product_id" 
+			property="score"
+			javaType="Score"
+			select="Score.selectByProductId"/>
+		
+		<!-- 사이즈 -->			
+		<collection 
+			column="product_id" 
+			property="psizeList"
+			javaType="java.util.List"
+			ofType="Psize"
+			select="Psize.selectByProductId"/>
+			
+		<!-- 색상 -->			
+		<collection 
+			column="product_id" 
+			property="colorList"
+			javaType="java.util.List"
+			ofType="Color"
+			select="Color.selectByProductId"/>
+			
+		<!-- 이미지 -->			
+		<collection 
+			column="product_id" 
+			property="imageList"
+			javaType="java.util.List"
+			ofType="Image"
+			select="Image.selectByProductId"/>
+			
+	</resultMap>
+	
+	<select id="select" resultMap="joinPsizeColorScoreImage">
+		select * from product where product_id=#{product_id}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+

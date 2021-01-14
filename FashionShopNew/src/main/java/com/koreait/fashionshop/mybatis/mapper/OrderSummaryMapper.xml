@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrderSummary">
+	<insert id="insert" parameterType="OrderSummary">
+		insert into order_summary(order_summary_id, member_id,total_price, total_pay, order_state_id,paymethod_id)
+		values(seq_order_summary.nextval, #{member_id},#{total_price},#{total_pay}, 1 ,#{paymethod_id})
+		<selectKey order="AFTER" keyProperty="order_summary_id" resultType="int">
+			select seq_order_summary.currval as order_summary_id from dual
+		</selectKey>
+	</insert>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
