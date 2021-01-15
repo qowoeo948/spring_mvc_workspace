@@ -1,6 +1,5 @@
 package com.koreait.fashionshop.model.product.service;
 
-import java.io.InputStream;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,23 +7,61 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.koreait.fashionshop.admin.controller.AdminProductController;
+import com.koreait.fashionshop.model.common.FileManager;
+import com.koreait.fashionshop.model.domain.Color;
 import com.koreait.fashionshop.model.domain.Product;
+import com.koreait.fashionshop.model.domain.Psize;
 import com.koreait.fashionshop.model.excel.ProductConverter;
+import com.koreait.fashionshop.model.product.repository.ColorDAO;
+import com.koreait.fashionshop.model.product.repository.ProductDAO;
+import com.koreait.fashionshop.model.product.repository.PsizeDAO;
 
 @Service
 public class DumpServiceImpl implements DumpService{
-	private static final Logger logger=LoggerFactory.getLogger(AdminProductController.class);
+	private static final Logger logger=LoggerFactory.getLogger(DumpService.class);
 	
 	@Autowired
 	private ProductConverter productConverter;
 	
+	@Autowired
+	private ProductDAO productDAO;
+	
+	@Autowired
+	private ColorDAO colorDAO;
+	
+	@Autowired
+	private PsizeDAO psizeDAO;
+	
 	@Override
 	public void regist(String path) {
-		//ì—‘ì…€ì„ ì½ì–´ì„œ ë°ì´í„°ë¡œ ë„£ê¸°
+		//¿¢¼¿À» ÀĞ¾î¼­ µ¥ÀÌÅÍ·Î ³Ö±â
 		List<Product> productList = productConverter.convertFromFile(path);
-		logger.debug("ì—‘ì…€íŒŒì¼ì„ ë¶„ì„í•˜ì—¬ ë‚˜ì˜¨ ê²°ê³¼ ë¦¬ìŠ¤íŠ¸ "+productList.size());
+		logger.debug("¿¢¼¿ÆÄÀÏÀ» ºĞ¼®ÇÏ¿© ³ª¿Â °á°ú ¸®½ºÆ® "+productList.size());
 		
+		for(int i=0;i<productList.size();i++) {
+			Product product = productList.get(i);
+			productDAO.insert(product);
+			//µû¶ó¼­ ÀÌ ¶óÀÎºÎÅÍ´Â product vo¿¡ product_id°¡ Ã¤¿öÁ®ÀÖ´Ù.
+			//ÀÎ¼­Æ® ÇÏÀÚ¸¶ÀÚ ÀÌ ½ÃÁ¡ºÎÅÍ´Â product vo¿¡ ÀÌ¹Ì pk°ªÀÌ Ã¤¿öÁ® ÀÖ´Â »óÅÂÀÌ´Ù..
+			
+			//»ö»ó³Ö±â!!(ÇÏ³ªÀÇ »óÇ°¿¡ µş·ÁÀÖ´Â ¿©·¯°³ÀÇ »ö»óÀ» ³ÖÀÚ, ±×¸®±â À§ÇØ¼­´Â product_id°¡ ÇÊ¿äÇÔ)
+			for(Color color :product.getColorList()) {
+				color.setProduct_id(product.getProduct_id());	
+				//ÀÌ ½ÃÁ¡ºÎÅÍ´Â ÄÃ·¯°¡ fk¸¦ º¸À¯ÇßÀ¸¹Ç·Î, »ö»óÅ×ÀÌºí¿¡µ¥ÀÌÅÍ ³Ö¾îº¸ÀÚ
+				//µ¥ÀÌÅÍ ³Ö¾îº¸ÀÚ!!
+				colorDAO.insert(color);
+			}
+			
+			//»çÀÌÁî ³Ö±â
+			for(Psize psize:product.getPsizeList()) {
+				psize.setProduct_id(product.getProduct_id());
+				psizeDAO.insert(psize);
+			}
+			
+			//ÀÌ¹Ì µé¾î°£ ÆÄÀÏ¸íÀ» product_id +È®ÀåÀÚ Á¶ÇÕÀ¸·Î ±³Ã¼ ex)35.jpg
+			product.setFilename(product.getProduct_id()+"."+FileManager.getExtend(product.getFilename()));
+			productDAO.update(product);
+		}
 	}
-
+	
 }

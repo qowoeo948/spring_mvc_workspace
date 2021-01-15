@@ -14,36 +14,36 @@ public class ExcelManager {
 	FileInputStream fis;
 	
 	public ExcelManager() {
-		//ë¡œì»¬ì˜ íŒŒì¼ì„ ì ‘ê·¼í•˜ê¸° ìœ„í•´ì„œëŠ” íŒŒì¼ ìŠ¤íŠ¸ë¦¼ì´ í•„ìš”í•¨
+		//·ÎÄÃÀÇ ÆÄÀÏÀ» Á¢±ÙÇÏ±â À§ÇØ¼­´Â ÆÄÀÏ ½ºÆ®¸²ÀÌ ÇÊ¿äÇÔ
 		try {
 			fis = new FileInputStream("D:/korea_workspace/FashionShop/src/main/webapp/resources/excel/myskill.xlsx");
-			//ì—‘ì…€ì„ ì œì–´í•˜ëŠ” ê°ì²´ ìƒì„± XSSFWorkbook
+			//¿¢¼¿À» Á¦¾îÇÏ´Â °´Ã¼ »ý¼º XSSFWorkbook
 			XSSFWorkbook workbook = new XSSFWorkbook(fis);
 			
-			//íŒŒì¼ì ‘ê·¼ì€ ì„±ê³µí•œ ìƒíƒœì´ë¯€ë¡œ, ì´ ì‹œì ë¶€í„°ëŠ” ì‰¬íŠ¸ì— ì ‘ê·¼í•œë‹¤ 
-			XSSFSheet sheet=workbook.getSheetAt(0); //ì²«ë²ˆì§¸ ì‰¬íŠ¸ ì„ íƒ
+			//ÆÄÀÏÁ¢±ÙÀº ¼º°øÇÑ »óÅÂÀÌ¹Ç·Î, ÀÌ ½ÃÁ¡ºÎÅÍ´Â ½¬Æ®¿¡ Á¢±ÙÇÑ´Ù 
+			XSSFSheet sheet=workbook.getSheetAt(0); //Ã¹¹øÂ° ½¬Æ® ¼±ÅÃ
 			
-			//ì´ ì‹œì ë¶€í„°ëŠ” sheetë¥¼ ì œì–´í•  ìˆ˜ ìžˆìœ¼ë¯€ë¡œ, ì´ ëª‡ê±´ì´ ì¡´ìž¬í•˜ëŠ”ì§€ë¶€í„° ì•Œì•„ë³¸ë‹¤ 
-			int rows = sheet.getPhysicalNumberOfRows(); //ë°ì´í„°ê°€ ì±„ì›Œì§„ row ìˆ˜
-			System.out.println("ë ˆì½”ë“œ ìˆ˜ëŠ” : "+rows);
+			//ÀÌ ½ÃÁ¡ºÎÅÍ´Â sheet¸¦ Á¦¾îÇÒ ¼ö ÀÖÀ¸¹Ç·Î, ÃÑ ¸î°ÇÀÌ Á¸ÀçÇÏ´ÂÁöºÎÅÍ ¾Ë¾Æº»´Ù 
+			int rows = sheet.getPhysicalNumberOfRows(); //µ¥ÀÌÅÍ°¡ Ã¤¿öÁø row ¼ö
+			System.out.println("·¹ÄÚµå ¼ö´Â : "+rows);
 			
-			//ë¡œìš°ì™€ ì»¬ëŸ¼ ìˆ˜ë§Œí¼ ë°˜ë³µë¬¸ ì‹¤í–‰í•˜ë©°, ë°ì´í„°ë¥¼ ì œì–´í•´ë³´ìž
+			//·Î¿ì¿Í ÄÃ·³ ¼ö¸¸Å­ ¹Ýº¹¹® ½ÇÇàÇÏ¸ç, µ¥ÀÌÅÍ¸¦ Á¦¾îÇØº¸ÀÚ
 			for(int i=0;i<rows;i++) {
-				XSSFRow row=sheet.getRow(i); //í•˜ë‚˜ì˜ ë¡œìš°ë¥¼ ì ‘ê·¼
+				XSSFRow row=sheet.getRow(i); //ÇÏ³ªÀÇ ·Î¿ì¸¦ Á¢±Ù
 				
-				//ì»¬ëŸ¼ìˆ˜ë§Œí¼ ë°˜ë³µë¬¸ ì‹¤í–‰
+				//ÄÃ·³¼ö¸¸Å­ ¹Ýº¹¹® ½ÇÇà
 				int columCount=row.getPhysicalNumberOfCells();
 				for(int a=0;a<columCount;a++) {
-					XSSFCell cell=row.getCell(a); //ì»¬ëŸ¼ í•œê°œë¥¼ ì ‘ê·¼
+					XSSFCell cell=row.getCell(a); //ÄÃ·³ ÇÑ°³¸¦ Á¢±Ù
 					
-					//ê°ì…€ì˜ ìžë£Œí˜•ì„ íŒë‹¨í•˜ì—¬ ê·¸ì— ë§žê²Œ ì ‘ê·¼ 
-					if(cell.getCellType() == CellType.STRING ) {//ì…€ì˜ ìžë£Œí˜•ì´ ë¬¸ìžì¸ê²½ìš°..
+					//°¢¼¿ÀÇ ÀÚ·áÇüÀ» ÆÇ´ÜÇÏ¿© ±×¿¡ ¸Â°Ô Á¢±Ù 
+					if(cell.getCellType() == CellType.STRING ) {//¼¿ÀÇ ÀÚ·áÇüÀÌ ¹®ÀÚÀÎ°æ¿ì..
 						System.out.print(cell.getStringCellValue()+"\t");
 					}else if(cell.getCellType() == CellType.NUMERIC) {
 						System.out.print((int)cell.getNumericCellValue()+"\t");
 					}
 				}
-				System.out.println();//ì¤„ë°”ê¿ˆ
+				System.out.println();//ÁÙ¹Ù²Þ
 			}
 			
 		} catch (FileNotFoundException e) {

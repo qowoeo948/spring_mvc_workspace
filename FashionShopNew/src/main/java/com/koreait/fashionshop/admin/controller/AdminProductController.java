@@ -32,7 +32,7 @@ import com.koreait.fashionshop.model.product.service.ProductService;
 import com.koreait.fashionshop.model.product.service.SubCategoryService;
 import com.koreait.fashionshop.model.product.service.TopCategoryService;
 
-//æ„¿ï¿½ç”±ÑŠì˜„ ï§â‘¤ë±¶ï¿½ë¿‰ï¿½ê½Œï¿½ì“½ ï¿½ê¸½ï¿½ë­¹ï¿½ë¿‰ ï¿½ï¿½ï¿½ë¸³ ï¿½ìŠ‚ï§£ï¿½ ï§£ì„â”
+//°ü¸®ÀÚ ¸ğµå¿¡¼­ÀÇ »óÇ°¿¡ ´ëÇÑ ¿äÃ» Ã³¸®
 @Controller
 public class AdminProductController implements ServletContextAware{
 	private static final Logger logger=LoggerFactory.getLogger(AdminProductController.class);
@@ -44,35 +44,39 @@ public class AdminProductController implements ServletContextAware{
 	private SubCategoryService subCategoryService;
 	
 	@Autowired
-	private ProductService productService;		//ë‚±ê°œì˜ ìƒí’ˆë“±ë¡ ì‹œ
+	private ProductService productService; //³¹°³ÀÇ »óÇ°µî·Ï½Ã
 	
 	@Autowired
-	private DumpService dumpService;	//ëŒ€ëŸ‰ ë“±ë¡ ì‹œ
+	private DumpService dumpService; //´ë·® µî·Ï½Ã 
 	
 	@Autowired
 	private FileManager fileManager;
 	
-	//ï¿½ìŠ¦ç”±Ñˆï¿½ ï¿½ì†¢ ServletContextç‘œï¿½ ï¿½ëœ¥ï¿½ë¹ï¿½ë¸¯ï¿½ë’—åª›ï¿½?   getRealPath() ï¿½ê¶—ï¿½ìŠœï¿½ë¸¯ï¿½ì ®æ€¨ï¿½!!!
+	
+	//¿ì¸®°¡ ¿Ö ServletContext¸¦ ½á¾ßÇÏ´Â°¡?   getRealPath() »ç¿ëÇÏ·Á°í!!!
 	private ServletContext servletContext;
 	
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
-		//ï¿½ì”  ï¿½ï¿½ï¿½ì” è«›ë¿ì“£ ï¿½ë„ƒç§»ì„ï¿½ï§ë¨­í€¬, ï¿½ë–ï¿½ì £ è‡¾ì‡°â”ï¿½ìŸ» å¯ƒìˆì¤ˆç‘œï¿½ FileManager ï¿½ë¿‰ ï¿½ï¿½ï¿½ì—¯ï¿½ë¹ï¿½ë„ƒï¿½ì˜„!!!
-		fileManager.setSaveBasicDir(servletContext.getRealPath(fileManager.getSaveBasicDir()));
-		fileManager.setSaveAddonDir(servletContext.getRealPath(fileManager.getSaveAddonDir()));
+		//ÀÌ Å¸ÀÌ¹ÖÀ» ³õÄ¡Áö¸»°í, ½ÇÁ¦ ¹°¸®Àû °æ·Î¸¦ FileManager ¿¡ ´ëÀÔÇØ³õÀÚ!!!
+		//fileManager.setSaveBasicDir(servletContext.getRealPath(fileManager.getSaveBasicDir()));
+		//fileManager.setSaveAddonDir(servletContext.getRealPath(fileManager.getSaveAddonDir()));
+		
+		fileManager.setSaveBasicDir(fileManager.getSaveBasicDir());
+		fileManager.setSaveAddonDir(fileManager.getSaveAddonDir());
 		
 		logger.debug(fileManager.getSaveBasicDir());
 		
 	}
 	
-	//ï¿½ê¸½ï¿½ìç§»ëŒ„ë€’æ€¨ì¢Šâ” åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½ (æ„¿ï¿½ç”±ÑŠì˜„ï¿½ìŠœ)
+	//»óÀ§Ä«Å×°í¸® °¡Á®¿À±â (°ü¸®ÀÚ¿ë)
 	@RequestMapping(value="/product/registform", method=RequestMethod.GET)
 	public ModelAndView getTopList(HttpServletRequest request) {
-		//3ï¿½ë–’æ€¨ï¿½: æ¿¡ì’–ì­… åª›ì•¹ê»œï¿½ë¿‰ ï¿½ì”ªï¿½ë–†ï¿½ê¶“ï¿½ë–
+		//3´Ü°è: ·ÎÁ÷ °´Ã¼¿¡ ÀÏ½ÃÅ²´Ù
 		List topList = topCategoryService.selectAll();
 		
-		//4ï¿½ë–’æ€¨ï¿½: ï¿½ï¿½ï¿½ì˜£ 
+		//4´Ü°è: ÀúÀå 
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("topList", topList);
 		mav.setViewName("admin/product/regist_form");
@@ -81,8 +85,8 @@ public class AdminProductController implements ServletContextAware{
 	}
 	
 	
-	//ï¿½ë¸¯ï¿½ìç§»ëŒ„ë€’æ€¨ì¢Šâ” åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
-	//ï¿½ë’ªï¿½ë´½ï§ê³¸ë¿‰ï¿½ê½Œï¿½ë’— javaåª›ì•¹ê»œï¿½ï¿½ Jsonåª›ï¿½ è¹‚ï¿½ï¿½ì†š(converting)ï¿½ì“£ ï¿½ì˜„ï¿½ë£ï¿½ì‘æ¿¡ï¿½ ï§£ì„â”ï¿½ë¹äºŒì‡°ë’— ï¿½ì”ªï¿½ì” é‡‰ëš®ìœ­ç”±Ñ‰ï¿½ï¿½ ï§ï¿½ï¿½ìï¿½ë¸³ï¿½ë–
+	//ÇÏÀ§Ä«Å×°í¸® °¡Á®¿À±â
+	//½ºÇÁ¸µ¿¡¼­´Â java°´Ã¼¿Í Json°£ º¯È¯(converting)À» ÀÚµ¿À¸·Î Ã³¸®ÇØÁÖ´Â ¶óÀÌºê·¯¸®¸¦ Áö¿øÇÑ´Ù
 	@RequestMapping(value="/product/sublist", method=RequestMethod.GET)
 	@ResponseBody
 	public List getSubList(HttpServletRequest request, int topcategory_id) {
@@ -95,25 +99,24 @@ public class AdminProductController implements ServletContextAware{
 		return "admin/product/excel_form";
 	}
 	
-	//ï¿½ë¿Šï¿½ï¿½ï¿½ë¿‰ ï¿½ì“½ï¿½ë¸³ ï¿½ê¸½ï¿½ë­¹ï¿½ë²‘æ¿¡ï¿½ ï¿½ìŠ‚ï§£ï¿½ ï§£ì„â” 
+	//¿¢¼¿¿¡ ÀÇÇÑ »óÇ°µî·Ï ¿äÃ» Ã³¸® 
 	@RequestMapping(value="/product/excel/regist", method=RequestMethod.POST)
-	@ResponseBody // é®ê¾¨ë£æ¹²ï¿½ ï¿½ì” èª˜ï¿½æ¿¡ï¿½ 
+	@ResponseBody // ºñµ¿±â ÀÌ¹Ç·Î 
 	public MessageData registByExcel(HttpServletRequest request, MultipartFile dump) {
-		String path = fileManager.getSaveBasicDir()+File.separator+dump.getOriginalFilename(); //ï¿½ï¿½ï¿½ì˜£ï¿½ë¸· ï¿½ë™†ï¿½ì”ªï§ï¿½
+		String path = fileManager.getSaveBasicDir()+File.separator+dump.getOriginalFilename(); //ÀúÀåÇÒ ÆÄÀÏ¸í
 		fileManager.saveFile(path, dump);
 		
 		MessageData messageData = new MessageData();
 		messageData.setResultCode(1);
-		messageData.setMsg("ï¿½ë¿Šï¿½ï¿½ï¿½ë²‘æ¿¡ï¿½ ï¿½ê½¦æ€¨ï¿½");
+		messageData.setMsg("¿¢¼¿µî·Ï ¼º°ø");
 		
-		//ì—‘ì…€ ì½ì–´ì„œ ë°ì´í„°ë² ì´ìŠ¤ì— ë„£ê¸°
-		
+		//¿¢¼¿ ÀĞ¾î¼­ µ¥ÀÌÅÍº£ÀÌ½º¿¡ ³Ö±â!! 
 		dumpService.regist(path);
-		
+
 		return messageData;
 	}
 	
-	//ï¿½ê¸½ï¿½ë­¹ï§â‘¸ì¤‰
+	//»óÇ°¸ñ·Ï
 	@RequestMapping(value="/product/list", method=RequestMethod.GET )
 	public ModelAndView getProductList(HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("admin/product/product_list");
@@ -122,7 +125,7 @@ public class AdminProductController implements ServletContextAware{
 		return mav;
 	}
 	
-	//ï¿½ê¸½ï¿½ë­¹ï¿½ë²‘æ¿¡ï¿½ ï¿½ë¤Œ 
+	//»óÇ°µî·Ï Æû 
 	@RequestMapping(value="/product/registform")
 	public String registForm() {
 		
@@ -130,27 +133,27 @@ public class AdminProductController implements ServletContextAware{
 	}
 	
 	
-	//ï¿½ê¸½ï¿½ë­¹ ï¿½ê¸½ï¿½ê½­ 
+	//»óÇ° »ó¼¼ 
 	
-	//ï¿½ê¸½ï¿½ë­¹ ï¿½ë²‘æ¿¡ï¿½ 
+	//»óÇ° µî·Ï 
 	@RequestMapping(value="/product/regist", method=RequestMethod.POST)
 	@ResponseBody
 	public MessageData registProduct(HttpServletRequest request, Product product, String[] test) {
-		logger.debug("ï¿½ë¸¯ï¿½ìç§»ëŒ„ë€’æ€¨ì¢Šâ” "+product.getSubCategory().getSubcategory_id());
-		logger.debug("ï¿½ê¸½ï¿½ë­¹ï§ï¿½ "+product.getProduct_name());
-		logger.debug("åª›ï¿½å¯ƒï¿½ "+product.getPrice());
-		logger.debug("é‡‰ëš®ì˜–ï¿½ë±¶ "+product.getBrand());
-		logger.debug("ï¿½ê¸½ï¿½ê½­ï¿½ê¶¡ï¿½ìŠœ "+product.getDetail());
+		logger.debug("ÇÏÀ§Ä«Å×°í¸® "+product.getSubCategory().getSubcategory_id());
+		logger.debug("»óÇ°¸í "+product.getProduct_name());
+		logger.debug("°¡°İ "+product.getPrice());
+		logger.debug("ºê·£µå "+product.getBrand());
+		logger.debug("»ó¼¼³»¿ë "+product.getDetail());
 		
 		for(Psize psize : product.getPsize()) {
 			logger.debug(psize.getFit());
 		}
 		
-		productService.regist(fileManager, product); //ï¿½ê¸½ï¿½ë­¹ï¿½ë²‘æ¿¡ï¿½ ï¿½ê½Œé®ê¾©ë’ªï¿½ë¿‰å¯ƒï¿½ ï¿½ìŠ‚ï§£ï¿½
+		productService.regist(fileManager, product); //»óÇ°µî·Ï ¼­ºñ½º¿¡°Ô ¿äÃ»
 		
 		MessageData messageData = new MessageData();
 		messageData.setResultCode(1);
-		messageData.setMsg("ï¿½ê¸½ï¿½ë­¹ ï¿½ë²‘æ¿¡ï¿½ ï¿½ê½¦æ€¨ë“­ì—¯ï¿½ë•²ï¿½ë–.");
+		messageData.setMsg("»óÇ° µî·Ï ¼º°øÀÔ´Ï´Ù.");
 		
 		return messageData;
 	}
@@ -158,13 +161,13 @@ public class AdminProductController implements ServletContextAware{
 
 	
 	
-	//ï¿½ê¸½ï¿½ë­¹ ï¿½ë‹”ï¿½ì ™
+	//»óÇ° ¼öÁ¤
 	
-	//ï¿½ê¸½ï¿½ë­¹ ï¿½ê¶˜ï¿½ì £
+	//»óÇ° »èÁ¦
 
 	
-	//ï¿½ì‚ï¿½ì‡…ï§£ì„â” 
-	//ï¿½ìï¿½ì“½ ï§ë¶¿ê½Œï¿½ë±¶ ä»¥ë¬’ë¿‰ï¿½ê½Œ ï¿½ë¸¯ï¿½êµ¹ï¿½ì”ªï¿½ë£„ ï¿½ì‚ï¿½ì‡…åª›ï¿½ è«›ì’–ê¹®ï¿½ë¸¯ï§ï¿½, ï¿½ë¸˜ï¿½ì˜’ï¿½ì“½ ï¿½ë¹–ï¿½ë±¾ï¿½ìœ­åª›ï¿½ ï¿½ë£ï¿½ì˜‰
+	//¿¹¿ÜÃ³¸® 
+	//À§ÀÇ ¸Ş¼­µå Áß¿¡¼­ ÇÏ³ª¶óµµ ¿¹¿Ü°¡ ¹ß»ıÇÏ¸é, ¾Æ·¡ÀÇ ÇÚµé·¯°¡ µ¿ÀÛ
 	@ExceptionHandler(ProductRegistException.class)
 	@ResponseBody
 	public String handleException(ProductRegistException e) {
@@ -189,21 +192,3 @@ public class AdminProductController implements ServletContextAware{
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

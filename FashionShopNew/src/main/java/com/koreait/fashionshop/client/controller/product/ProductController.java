@@ -31,7 +31,7 @@ import com.koreait.fashionshop.model.product.service.ProductService;
 import com.koreait.fashionshop.model.product.service.SubCategoryService;
 import com.koreait.fashionshop.model.product.service.TopCategoryService;
 
-//관리자 모드에서의 상품에 대한 요청 처리
+//愿�由ъ옄 紐⑤뱶�뿉�꽌�쓽 �긽�뭹�뿉 ���븳 �슂泥� 泥섎━
 @Controller
 public class ProductController implements ServletContextAware{
 	private static final Logger logger=LoggerFactory.getLogger(ProductController.class);
@@ -48,34 +48,37 @@ public class ProductController implements ServletContextAware{
 	@Autowired
 	private FileManager fileManager;
 	
-	//우리가 왜 ServletContext를 써야하는가?   getRealPath() 사용하려고!!!
+	//�슦由ш� �솢 ServletContext瑜� �뜥�빞�븯�뒗媛�?   getRealPath() �궗�슜�븯�젮怨�!!!
 	private ServletContext servletContext;
 	
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
-		//이 타이밍을 놓치지말고, 실제 물리적 경로를 FileManager 에 대입해놓자!!!
-		fileManager.setSaveBasicDir(servletContext.getRealPath(fileManager.getSaveBasicDir()));
-		fileManager.setSaveAddonDir(servletContext.getRealPath(fileManager.getSaveAddonDir()));
+		//�씠 ���씠諛띿쓣 �넃移섏�留먭퀬, �떎�젣 臾쇰━�쟻 寃쎈줈瑜� FileManager �뿉 ���엯�빐�넃�옄!!!
+		//fileManager.setSaveBasicDir(servletContext.getRealPath(fileManager.getSaveBasicDir()));
+		//fileManager.setSaveAddonDir(servletContext.getRealPath(fileManager.getSaveAddonDir()));
+		
+		fileManager.setSaveBasicDir(fileManager.getSaveBasicDir());
+		fileManager.setSaveAddonDir(fileManager.getSaveAddonDir());
 		
 		logger.debug(fileManager.getSaveBasicDir());
 		
 	}
 	
-	//상품 수정
+	//�긽�뭹 �닔�젙
 	
-	//상품 삭제
+	//�긽�뭹 �궘�젣
 
 	
 	
 	
 	/* *********************************************************************** 
-	  쇼핑몰 프론트 요청 처리 
+	  �눥�븨紐� �봽濡좏듃 �슂泥� 泥섎━ 
 	 ************************************************************************/
-	//상품목록 요청 처리
+	//�긽�뭹紐⑸줉 �슂泥� 泥섎━
 	@RequestMapping(value="/product/list", method=RequestMethod.GET)
-	public ModelAndView getShopProductList(HttpServletRequest request, int subcategory_id) {//하위카테고리의 id
-		List productList = productService.selectById(subcategory_id);//상품목록
+	public ModelAndView getShopProductList(HttpServletRequest request, int subcategory_id) {//�븯�쐞移댄뀒怨좊━�쓽 id
+		List productList = productService.selectById(subcategory_id);//�긽�뭹紐⑸줉
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("productList", productList);
@@ -83,18 +86,18 @@ public class ProductController implements ServletContextAware{
 		return mav;
 	}
 		
-	//상품상세 보기 요청 
+	//�긽�뭹�긽�꽭 蹂닿린 �슂泥� 
 	@RequestMapping(value="/product/detail", method=RequestMethod.GET)
 	public ModelAndView getShopProductDetail(HttpServletRequest request, int product_id) {
-		Product product = productService.select(product_id);//상품 1건 가져오기
+		Product product = productService.select(product_id);//�긽�뭹 1嫄� 媛��졇�삤湲�
 		ModelAndView mav = new ModelAndView("shop/product/detail");
 		mav.addObject("product", product);
 		
 		return mav;
 	}
 	
-	//예외처리 
-	//위의 메서드 중에서 하나라도 예외가 발생하면, 아래의 핸들러가 동작
+	//�삁�쇅泥섎━ 
+	//�쐞�쓽 硫붿꽌�뱶 以묒뿉�꽌 �븯�굹�씪�룄 �삁�쇅媛� 諛쒖깮�븯硫�, �븘�옒�쓽 �빖�뱾�윭媛� �룞�옉
 	@ExceptionHandler(ProductRegistException.class)
 	@ResponseBody
 	public String handleException(ProductRegistException e) {

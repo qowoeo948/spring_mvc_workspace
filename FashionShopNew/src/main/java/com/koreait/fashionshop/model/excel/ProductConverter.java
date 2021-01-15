@@ -2,75 +2,99 @@ package com.koreait.fashionshop.model.excel;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+import com.koreait.fashionshop.model.domain.Color;
 import com.koreait.fashionshop.model.domain.Product;
+import com.koreait.fashionshop.model.domain.Psize;
 import com.koreait.fashionshop.model.domain.SubCategory;
 
-/*ì—‘ì…€ì„ ì½ì–´ë“¤ì—¬, ìë°”ì˜ POJOí˜•íƒœë¡œ ë³€í™˜í•˜ëŠ” ìš©ë„*/
-@Component		//scanì˜ ëŒ€ìƒì´ ë¨
+/*
+ * ¿¢¼¿À» ÀĞ¿©µé¿©, ÀÚ¹ÙÀÇ POJO ÇüÅÂ·Î º¯È¯ÇÏ´Â ¿ëµµ
+ * */
+@Component  //scanÀÇ ´ë»óÀÌ µÊ
 public class ProductConverter {
 	
-	//ëˆ„êµ°ê°€ ì´ ë©”ì„œë“œë¥¼ í˜¸ì¶œí•˜ëŠ” ìëŠ” , ìì‹ ì´ ë³´ìœ í•œ ìŠ¤íŠ¸ë¦¼ ì£¼ì†Œë¥¼ ë„˜ê¸°ë©´ë¨.
+	//´©±º°¡ ÀÌ ¸Ş¼­µå¸¦ È£ÃâÇÏ´Â ÀÚ´Â, ÀÚ½ÅÀÌ º¸À¯ÇÑ ½ºÆ®¸² ÁÖ¼Ò¸¦ ³Ñ±â¸é µÊ..
 	public List convertFromFile(String path) {
 		List<Product> productList = new ArrayList<Product>();
-		FileInputStream fis = null;
-		
-		//ì—‘ì…€ íŒŒì¼ ì œì–´ ê°ì²´ ìƒì„±
+		FileInputStream fis =null;
 		try {
 			fis = new FileInputStream(path);
-			HSSFWorkbook book = new HSSFWorkbook(fis);
 			
-			//íŒŒì¼ì„ ì ‘ê·¼í–ˆìœ¼ë‹ˆ, ì‰¬íŠ¸ì— ì ‘ê·¼í•˜ì
-			HSSFSheet sheet = book.getSheetAt(0);	//ì²«ë²ˆì§¸ì ‘ê·¼
+			//¿¢¼¿ÆÄÀÏ Á¦¾î °´Ã¼ »ı¼º 
+			XSSFWorkbook book=new XSSFWorkbook(fis);
 			
-			//ì´ì¤‘ ë°˜ë³µë¬¸ì˜ íšŸìˆ˜ë¥¼ êµ¬í•˜ê¸°
-			int rowCount = sheet.getPhysicalNumberOfRows();
-			int columCount;
+			//ÆÄÀÏÀ» Á¢±ÙÇßÀ¸´Ï, ½¬Æ®¿¡ Á¢±ÙÇØº¸ÀÚ
+			XSSFSheet sheet=book.getSheetAt(0); //Ã¹¹øÂ° ½¬Æ®¿¡ Á¢±Ù
+			
+			//ÀÌÁß ¹İº¹¹®ÀÇ È½¼ö¸¦ ±¸ÇÏ±â 
+			int rowCount=sheet.getPhysicalNumberOfRows();
+			
 			for(int i=1;i<rowCount;i++) {
-				Product product = new Product();	//í……ë¹ˆ voì¤€ë¹„í•˜ê¸°
-				//ì»¬ëŸ¼ìˆ˜ë§í¼ ë°˜ë³µë¬¸ ì²˜ë¦¬
-				HSSFRow row = sheet.getRow(i);	//ì—´ í•˜ë‚˜ ì–»ê¸°
+				Product product = new Product(); //ÅÖºó VO ÁØºñÇÏ±â..(Ã¤¿ö³Ö±â À§ÇÔ)
+				//ÄÃ·³¼ö¸¸Å­ ¹İº¹¹® Ã³¸®
+				XSSFRow row = sheet.getRow(i); //¿­ ÇÏ³ª ¾ò±â
 				
 				for(int a=0;a<row.getPhysicalNumberOfCells();a++) {
-					HSSFCell cell = row.getCell(a);	//ì…€ í•˜ë‚˜ì— ì ‘ê·¼
-					if(a==0) {	//subcategory_id
+					XSSFCell cell = row.getCell(a); //¼¿ÇÏ³ª¿¡ Á¢±Ù
+					
+					if(a==0) {//subcategory_id
 						SubCategory subCategory = new SubCategory();
 						subCategory.setSubcategory_id((int)cell.getNumericCellValue());
 						product.setSubCategory(subCategory);
-					}else if(a==1) {	//product_name
+					}else if(a==1) {//product_name
 						product.setProduct_name(cell.getStringCellValue());
-					}else if(a==2) {	//price
+					}else if(a==2) {
 						product.setPrice((int)cell.getNumericCellValue());
-					}else if(a==3) {	//brand
+					}else if(a==3) {
 						product.setBrand(cell.getStringCellValue());
+					}else if(a==4){//»ö»ó 
+						String[] colors=cell.getStringCellValue().trim().split(","); //Á¡À» ±âÁØÀ¸·Î ³ª´©¸é, ½ºÆ®¸µ ¹è¿­ÀÌ¹İÈ¯!!
+						List colorList = new ArrayList();
+						for(String color :colors) {
+							Color obj = new Color();
+							obj.setPicker(color);  //ÇÏ³ªÀÇ »ö»ó vo¿¡ »ö»óÁ¤º¸¸¦ ´ëÀÔ
+							colorList.add(obj);
+						}
+						product.setColorList(colorList);
+					}else if(a==5) {
+						String[] psize=cell.getStringCellValue().trim().split(","); //Á¡À» ±âÁØÀ¸·Î ³ª´©¸é, ½ºÆ®¸µ ¹è¿­ÀÌ¹İÈ¯!!
+						List psizeList = new ArrayList();
+						for(String size :psize) {
+							Psize obj = new Psize();
+							obj.setFit(size);  //ÇÏ³ªÀÇ »ö»ó vo¿¡ »ö»óÁ¤º¸¸¦ ´ëÀÔ
+							psizeList.add(obj);
+						}
+						product.setPsizeList(psizeList);
 					}else if(a==6) {
 						product.setDetail(cell.getStringCellValue());
+					}else if(a==7) {
+						product.setFilename(cell.getStringCellValue());	//¿¢¼¿¿¡ µé¾îÀÖ´Â ¿øº»ÆÄÀÏ¸í
 					}
 				}
-				//ì™„ì„±ëœ ìƒí’ˆì„ Listì— ë‹´ì
+				//¿Ï¼ºµÈ »óÇ°À» ¸®½ºÆ®¿¡ ´ãÀÚ 
 				productList.add(product);
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally {
 			if(fis!=null) {
 				try {
 					fis.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
 		
 		return productList;
 	}

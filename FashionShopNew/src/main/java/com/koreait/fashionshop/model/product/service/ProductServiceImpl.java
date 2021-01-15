@@ -56,44 +56,44 @@ public class ProductServiceImpl implements ProductService{
 	public void regist(FileManager fileManager, Product product) throws UploadFailException, ProductRegistException{
 		
 		String ext=fileManager.getExtend(product.getRepImg().getOriginalFilename());
-		product.setFilename(ext); //확장자 결정
-		//db에 넣는 일은 DAO에게 시키고
+		product.setFilename(ext); //�솗�옣�옄 寃곗젙
+		//db�뿉 �꽔�뒗 �씪�� DAO�뿉寃� �떆�궎怨�
 		productDAO.insert(product);
 		
-		//파일 업로드!!는 FileManager에게 시킨다
-		//대표이미지 업로드 
+		//�뙆�씪 �뾽濡쒕뱶!!�뒗 FileManager�뿉寃� �떆�궓�떎
+		//���몴�씠誘몄� �뾽濡쒕뱶 
 		String basicImg = product.getProduct_id()+"."+ext;
 		fileManager.saveFile(fileManager.getSaveBasicDir()+File.separator+basicImg, product.getRepImg());
 		
-		//추가이미지 업로드 (FileManager에게 추가이미지 갯수만큼 업로드 업무를 시키면 된다!!)
+		//異붽��씠誘몄� �뾽濡쒕뱶 (FileManager�뿉寃� 異붽��씠誘몄� 媛��닔留뚰겮 �뾽濡쒕뱶 �뾽臾대�� �떆�궎硫� �맂�떎!!)
 		for(int i=0;i<product.getAddImg().length;i++) {
 			
 			MultipartFile file = product.getAddImg()[i];
 			ext = fileManager.getExtend(file.getOriginalFilename());
 			
-			//image table에 넣기!!
+			//image table�뿉 �꽔湲�!!
 			Image image = new Image();
 			image.setProduct_id(product.getProduct_id()); //fk
-			image.setFilename(ext); //확장자 넣기
+			image.setFilename(ext); //�솗�옣�옄 �꽔湲�
 			imageDAO.insert(image);
 			
-			//메니져의 저장 메서드 호출
+			//硫붾땲�졇�쓽 ���옣 硫붿꽌�뱶 �샇異�
 			String addImg = image.getImage_id()+"."+ext;
 			fileManager.saveFile(fileManager.getSaveAddonDir()+File.separator+addImg, file);
 		}
 		
-		//기타 옵션 중, 색상 사이즈 넣기 (반복문으로...)
+		//湲고� �샃�뀡 以�, �깋�긽 �궗�씠利� �꽔湲� (諛섎났臾몄쑝濡�...)
 		
-		//사이즈
+		//�궗�씠利�
 		for(Psize psize : product.getPsize()) {
-			//logger.debug("당신이 선택한 사이즈는 "+psize.getFit());
-			psize.setProduct_id(product.getProduct_id());//fk 대입
+			//logger.debug("�떦�떊�씠 �꽑�깮�븳 �궗�씠利덈뒗 "+psize.getFit());
+			psize.setProduct_id(product.getProduct_id());//fk ���엯
 			psizeDAO.insert(psize);
 		}
 		
-		//색상 
+		//�깋�긽 
 		for(Color color : product.getColor()){
-			logger.debug("넘겨받은 색상은 "+color.getPicker());
+			logger.debug("�꽆寃⑤컺�� �깋�긽�� "+color.getPicker());
 			color.setProduct_id(product.getProduct_id());
 			colorDAO.insert(color);
 		}
@@ -102,7 +102,6 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	public void update(Product product) {
-		// TODO Auto-generated method stub
 		
 	}
 

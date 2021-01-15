@@ -33,13 +33,16 @@ public class MybatisProductDAO implements ProductDAO{
 	public void insert(Product product) throws ProductRegistException{
 		int result = sqlSessionTemplate.insert("Product.insert", product);
 		if(result==0) {
-			throw new ProductRegistException("상품테이블에 입력실패");
+			throw new ProductRegistException("�긽�뭹�뀒�씠釉붿뿉 �엯�젰�떎�뙣");
 		}
 	}
 
 	@Override
 	public void update(Product product) throws ProductRegistException{
-
+		int result=sqlSessionTemplate.update("Product.update",product);
+		if(result==0) {
+			throw new ProductRegistException("상품 수정 실패");
+		}
 		
 	}
 
