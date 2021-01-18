@@ -19,7 +19,6 @@
 		<result column="quantity" property="quantity"/>
 		<result column="product_name" property="product_name"/>
 		<result column="price" property="price"/>
-		<result column="brand" property="brand"/>
 		<result column="detail" property="detail"/>
 		<result column="filename" property="filename"/>
 		
@@ -33,7 +32,7 @@
 	<!-- 장바구니 목록 가져오기 -->
 	<select id="selectAll" parameterType="int" resultMap="joinSubCategory">
 		select cart_id, c.product_id as product_id, member_id, quantity
-		,subcategory_id, product_name, price, brand, detail, filename
+		,subcategory_id, product_name, price, detail, filename
 		from cart c, product p
 	    where c.product_id = p.product_id and member_id=#{member_id}
 	</select>
