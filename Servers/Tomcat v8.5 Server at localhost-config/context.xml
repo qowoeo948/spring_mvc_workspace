@@ -27,16 +27,16 @@
                       global="jdbc/oracle" />  
 	 -->
 
+	<!-- 
 	<ResourceLink type="javax.sql.DataSource"
                       name="jdbc/oracle2"
                       global="jdbc/oracle2" />                      
 
+	 -->
 	 
-	<!-- 
 	<ResourceLink type="javax.sql.DataSource"
                       name="jdbc/mysql"
                       global="jdbc/mysql" />
-	 -->
 	
 
  
