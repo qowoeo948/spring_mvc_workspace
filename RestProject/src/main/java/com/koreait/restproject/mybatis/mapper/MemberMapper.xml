@@ -2,9 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Member">
 	
+	<sql id="select_common">
+		select *from member
+	</sql>
+	
+	<select id="selectAll" resultType="Member">
+		<include refid="select_common"/> order by member_id asc
+	</select>
+	
+	<select id="select" parameterType="int" resultType="Member">
+		<include refid="select_common"/>
+		where member_id=#{member_id}
+	</select>
+	
 	<insert id="insert" parameterType="Member">
 		insert into member(m_id,m_pass,m_name) values(#{m_id},#{m_pass},#{m_name})
 	</insert>
+	
 	
 </mapper>
 

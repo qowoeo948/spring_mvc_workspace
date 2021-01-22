@@ -1,6 +1,9 @@
 package com.koreait.restproject.rest.controller.member;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +25,17 @@ public class MemberController {
 	private MemberService memberService;
 	
 	//안드로이드로 할거니까 jsp로 주면 안됨
+	//jsp페이지를 반환하지 말고, 데이터를 전송해야함
+	//원래 responseBody를 해야하지만 위에서 @RestController로 해서 안해도됨
 	@GetMapping("/member")
-	public String getList() {
-		log.debug("리스트 요청했어?");
-		return "hahaha";
+	public ResponseEntity<List<Member>> getList() {
+		log.debug("Rest 리스트 요청했어?");
+		List memberList = memberService.selectAll();
+		
+		//성공인 경우
+		ResponseEntity entity=ResponseEntity.ok().body(memberList);
+		
+		return entity;
 	}
 	
 	@PostMapping("/member")			//@RequestBody -> 이 member VO와 날라온 제이슨을 매핑시키라는 뜻

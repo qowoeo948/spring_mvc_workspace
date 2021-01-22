@@ -32,6 +32,50 @@
 		
 	}
 	
+	//목록가져오기 (페이지가 아니라 데이터만 가져와야 하므로 비동기로 요청한다!!)
+	function getList(){
+		$.ajax({
+			url:"/rest/member",
+			type:"GET",
+			success:function(responseData){	//서버에 응답처리
+				console.log("성공 응답데이터 받음 ",responseData);
+			//요청에 대한 성공실패를 어떻게 판단할까?
+					printData(responseData);
+			},
+			error:function(xhr,status,error){
+				console.log("에러응답데이터 받음: xhr= ",xhr);
+				alert(xhr.responseJSON.msg);
+			}
+		});
+		
+		
+	}
+	
+	//list-area영역에 서버로 부터 받은 json 데이터 출력
+	function printData(responseData){
+		var tag="<table border=\"1px\">";
+		tag+="<tr>";
+		tag+="<td>ID</td>";
+		tag+="<td>Pass</td>";
+		tag+="<td>Name</td>";
+		tag+="</tr>";
+		for(var i=0;i<responseData.length;i++){
+		var json = responseData[i];
+		tag+="<tr>";
+		tag+="<td>"+json.m_id+"</td>";
+		tag+="<td>"+json.m_pass+"</td>";
+		tag+="<td>"+json.m_name+"</td>";
+		tag+="</tr>";
+		}
+		
+		tag+="</table>";
+
+		
+		$("#list-area").html(tag);
+	}
+	
+	
+	
 </script>
 </head>
 <body>
@@ -39,9 +83,15 @@
 		<input type="text" id="m_id" placeholder="아이디입력">
 		<input type="text" id="m_pass" placeholder="패스워드입력">
 		<input type="text" id="m_name" placeholder="이름입력">
-		
-		<button type="button" onClick="regist()">전송</button>
 	</form>
+
+		<button type="button" onClick="regist()">등록</button>
+		<button type="button" onClick="getList()">목록가져오기</button>
+		
+		<div>이곳에 나올예정</div>
+		<div id="list-area">
+			
+		</div>
 
 </body>
 </html>
