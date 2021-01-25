@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	  <title>Bootstrap Example</title>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	  
+<style>
+		input[type=text], select, textarea {
+		  width: 100%;
+		  padding: 12px;
+		  border: 1px solid #ccc;
+		  border-radius: 4px;
+		  box-sizing: border-box;
+		  margin-top: 6px;
+		  margin-bottom: 16px;
+		  resize: vertical;
+		}
+		
+		input[type=button] {
+		  background-color: #4CAF50;
+		  color: white;
+		  padding: 12px 20px;
+		  border: none;
+		  border-radius: 4px;
+		  cursor: pointer;
+		}
+		
+		input[type=button]:hover {
+		  background-color: #45a049;
+		}
+		
+		.container {
+		  border-radius: 5px;
+		  background-color: #f2f2f2;
+		  padding: 20px;
+		}
+		
+		table {
+		  border-collapse: collapse;
+		  border-spacing: 0;
+		  width: 100%;
+		  border: 1px solid #ddd;
+		}
+		
+		th, td {
+		  text-align: left;
+		  padding: 16px;
+		}
+		
+		tr:nth-child(even) {
+		  background-color: #f2f2f2;
+		}
+</style>
+	  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- 리액트 관련 태그 -->
+<script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  
+  <!-- bable지원 스크립트로 만들기 (react쓰려고) -->
+<script type="text/babel">
+//react를 이용하여 아래의 태그를 문자열처리 없이 그대로 사용해본다(사실 babel 이라는 자바스크립트 라이브러리가 사용)
+//아래의 테이블을 하나의 컴포넌트로 등록하여 재사용할 예정임..
+class TableContent extends React.Component{
+
+	itemClick(board_id){
+		//return안하면 바로 실행되어버려
+		return function(){
+		console.log("board_id is ",board_id);
+		//한건 가져오기!! board_id를 알아야한다.
+		getDetail(board_id);
+		}
+	}
+
+	render(){
+		// js코드가 올수있다..
+		console.log("dataList is ", this.props.dataList);			
+		var row=[]; //define empty js array
+		
+		for(var i=0;i<this.props.dataList.length;i++){
+		var board = this.props.dataList[i];
+			row.push(
+					<tr>
+						<td>{i}</td>
+						<td onClick={this.itemClick(board.board_id)}>{board.title}</td>
+						<td>{board.writer}</td>
+						<td>{board.regdate}</td>
+						<td>{board.hit}</td>
+					</tr>
+			);
+		}
+
+		//return안에서는 babel의 데이터만 반환해야 한다!!(로직 작성못함... 반복문,변수선언 안돼..)
+		return (
+			<table>
+				<tr>
+					<th>No</th>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>등록일</th>
+					<th>조회수</th>
+				</tr>
+				{row}
+			</table>			
+		)
+	}
+}
+
+$(function(){
+
+	getList();//목록  가져오기 
+
+	$("#bt_regist").click(function(){
+		regist();
+	});	
+
+	$("#bt_list").click(function(){
+		getList();
+	});	
+
+	$("#bt_edit").click(function(){
+		if(confirm("수정하시겠어요?")){
+			edit();
+		}
+	});	
+
+	$("#bt_del").click(function(){
+		if(confirm("삭제하시겠어요?")){
+			del();
+		}
+	});	
+
+
+
+	
+});
+
+function regist(){
+	var obj={}; //define empty json
+	obj["title"]=$("#title").val(); //작성자
+	obj["writer"]=$("#writer").val(); //제목
+	obj["content"]=$("#content").val(); //내용
+	
+	var jsonString = JSON.stringify(obj);//전송하려면, 직렬화(데이터를 쪼개는 것)
+	console.log(jsonString);
+	
+ 	$.ajax({
+		url:"/rest/board",
+		type:"POST",
+		data:jsonString,
+		contentType:"application/json;charset=utf-8",
+		success:function(responseData){
+			console.log("성공",responseData);
+			getList(); //리스트 출력
+		},
+		error:function(hxr, status, error){
+			console.log("에러",hxr);
+			alert(hxr.responseJSON.msg);
+		}
+	});
+}
+
+//화면 동적 출력
+function getList(){
+
+	//rest server에서 데이터 가져오기 
+	$.ajax({
+		url:"/rest/board",
+		type:"GET",
+		success:function(responseData){
+			console.log("서버로부터 받은 json배열은 ", responseData);
+			//우리가 정의한 컴포넌트를 사용해보자
+			ReactDOM.render(<TableContent dataList={responseData} /> , document.getElementById("content-list"));
+
+				$("#content-list").show();	//상세보기 폼 보이게 처리
+				$("#content-detail").hide();	//목록테이블 안보이게
+		},
+		error:function(xhr, status, error){
+			console.log(xhr);
+		}		
+	});	
+}
+
+
+//한건 가져오기
+	function getDetail(board_id){
+		$.ajax({
+			url:"/rest/board/"+board_id,
+			type:"GET",
+			success:function(responseData){
+				console.log("성공: ",responseData);
+
+				//제이슨 데이터를 상세보기 폼양식에 채워넣자
+				$("#board_id").val(responseData.board_id);
+				$("#title2").val(responseData.title);
+				$("#writer2").val(responseData.writer);
+				$("#content2").val(responseData.content);
+
+				//상세보기 폼 처리
+				$("#content-list").hide();	//목록테이블 안보이게
+				$("#content-detail").show();	//상세보기 폼 보이게 처리
+			},
+			error:function(xhr,status,error){
+				console.log("에러: ",xhr);
+			}
+		});
+	}
+
+//삭제하기 요청
+	function del(){
+		$.ajax({
+			url:"/rest/board/"+$("#board_id").val(),
+			type:"DELETE",
+			success:function(responseData){
+				alert("삭제성공");
+				getList();	//목록보여주기
+			},
+			error:function(xhr,status,error){
+				console.log("에러 ",xhr);
+				alert(xhr.responseJSON.message);
+			}
+		});
+	}
+
+//수정하기 요청
+	function edit(){
+	var obj={}; //define empty json
+
+		obj["board_id"]=$("#board_id").val(); //board_id
+		obj["title"]=$("#title2").val(); //작성자
+		obj["writer"]=$("#writer2").val(); //제목
+		obj["content"]=$("#content2").val(); //내용
+	
+	var jsonString = JSON.stringify(obj);//전송하려면, 직렬화(데이터를 쪼개는 것)
+	console.log(jsonString);
+	
+ 	$.ajax({
+		url:"/rest/board",
+		type:"PUT",
+		data:jsonString,
+		contentType:"application/json;charset=utf-8",
+		success:function(responseData){
+			console.log("성공",responseData);
+			alert("수정성공");
+			getDetail(responseData.board_id); //board_id를 받아와야한다
+		},
+		error:function(hxr, status, error){
+			console.log("에러",hxr);
+			alert(hxr.responseJSON.msg);
+		}
+	});
+
+
+	}
+
+</script>
+</head>
+<body>
+
+<div class="container-fluid">
+  <h1 style="text-align: center;">비동기 반응형 게시판 클라이언트</h1>
+  <div class="row">
+    <div class="col-sm-4" style="background-color:lavender;">
+    	<div class="container">
+		  <form>
+		    <input type="text" id="title" name="title" placeholder="Title...">
+		    <input type="text" id="writer" name="writer" placeholder="Writer...">
+		    <textarea id="content" name="content"  placeholder="Content..." style="height:200px"></textarea>
+		    <input type="button" value="등록" id="bt_regist">
+		  </form>
+		</div>
+    
+    </div>
+    <div class="col-sm-8" style="background-color:lavenderblush;">
+    	<div id="content-list" style="overflow:scroll; height:400px;"></div>
+    	<div id="content-detail" style="display:none">
+    		<form>
+    			<input type="hidden" id="board_id">
+			    <input type="text" id="title2" name="title2" placeholder="Title...">
+			    <input type="text" id="writer2" name="writer2" placeholder="Writer...">
+			    <textarea id="content2" name="content2"  placeholder="Content..." style="height:200px"></textarea>
+			    <input type="button" value="수정" id="bt_edit">
+			    <input type="button" value="삭제" id="bt_del">
+			    <input type="button" value="목록" id="bt_list">
+		  </form>
+    	</div>
+    </div>
+  </div>
+</div>
+    
+</body>
+</html>

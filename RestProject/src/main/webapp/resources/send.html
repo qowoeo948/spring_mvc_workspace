@@ -23,7 +23,7 @@
 			url:"/rest/member",
 			type:"post",
 			contentType:"application/json",	//http통신의 헤더에 들어가는 정보
-			data:JSON.stringify(obj),
+			data:JSON.stringify(obj),	//제이슨 --> string형태로
 			success:function(response){
 				console.log(response);
 			}

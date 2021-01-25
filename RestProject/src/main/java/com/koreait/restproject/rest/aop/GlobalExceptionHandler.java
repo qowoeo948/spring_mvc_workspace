@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.koreait.restproject.exception.BoardUpdateException;
 import com.koreait.restproject.exception.MemberListException;
 import com.koreait.restproject.message.Message;
 
@@ -32,6 +33,19 @@ public class GlobalExceptionHandler {
 		//클라이언트에게 데이터만 전송하는게 아니라 서버의 상태도 함께 전송할 수 있다.
 		//ResponseEntity는 HttpEntity를 상속받은 http응답객체
 		ResponseEntity entity = new ResponseEntity<Message>(message, null, HttpStatus.BAD_REQUEST);
+		
+		return entity;
+	}
+	
+	
+	//게시판 관련 예외처리
+	@ExceptionHandler(BoardUpdateException.class)
+	public ResponseEntity<Message> handleException(BoardUpdateException e) {
+		Message message = new Message();
+		message.setMsg(e.getMessage());	//에러메시지 저장
+		
+		//괄호 안에 들어갈 것들 (전달할 데이터 객체(에러내용), 헤더값 , 오류status) 헤더를 뺴고 가도돼
+		ResponseEntity entity = new ResponseEntity(message, HttpStatus.INTERNAL_SERVER_ERROR);
 		
 		return entity;
 	}

@@ -1,4 +1,4 @@
-package com.koreait.restproject.rest.controller.member;
+package com.koreait.restproject.rest.controller;
 
 import java.util.List;
 
