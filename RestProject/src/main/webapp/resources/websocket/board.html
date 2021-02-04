@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Document</title>
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        * {box-sizing: border-box;}
+
+        input[type=text], select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        resize: vertical;
+        }
+
+        input[type=button] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        }
+
+        input[type=button]:hover {
+        background-color: #45a049;
+        }
+
+        .container {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+        }
+
+        table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+        }
+
+        th, td {
+        text-align: left;
+        padding: 16px;
+        }
+
+        tr:nth-child(even) {
+        background-color: #f2f2f2;
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+    <script type="text/babel">
+        var  sock;  //이 html을 배포한 서버와 연결된 소켓 얻기!
+
+        //재사용 가능성이 높은 html태그를 리엑트의 컴포넌트로 등록하는 과정
+        class TableContent extends React.Component{
+            
+            getItem(board_id){
+                return function(){  //무조건 호출방지를 위한 익명함수 및 리턴...
+                    getDetail(board_id);
+                }
+            }
+
+            render(){
+                var row =[];    //tr을 누적할 배열
+
+                for(var i=0;i<this.props.dataList.length;i++){
+                    var board = this.props.dataList[i]; //게시물 하나 꺼낸다.
+                    row.push(
+                        <tr>
+                        <td>{i+1}</td>
+                        <td onClick={this.getItem(board.board_id)}>{board.title}</td>
+                        <td>{board.writer}</td>
+                        <td>{board.regdate}</td>
+                        <td>{board.hit}</td>
+                    </tr>
+                    );
+                }
+
+                return(
+                <table>
+                    <tr>
+                        <th>No</th>
+                        <th>제목</th>
+                         <th>작성자</th>
+                        <th>등록일</th>
+                        <th>조회수</th>
+                    </tr>
+                    {row}
+              </table>
+
+                )
+            };
+        }
+
+
+        //문서가 로드되면, 웹소켓 서버에 접속을 시도하자!
+        $(function(){
+            connect();
+            getList();
+
+            //등록
+            $("#bt_regist").click(function(){
+                regist();
+            });
+
+            //수정
+            $("#bt_edit").click(function(){
+				if(confirm("수정하시겠습니까?")){
+                edit();
+				}
+            });
+
+            //삭제
+            $("#bt_del").click(function(){
+               if(confirm("삭제하시겠습니까?")){
+                del();
+				}
+            });
+        });
+
+        //비동기로 서버에 등록 요청
+        function  regist(){
+            var form = $("#regist-form").serialize();
+            var json = {};
+            json["title"]=$("#title").val();
+            json["writer"]=$("#writer").val();
+            json["content"]=$("#content").val();
+
+            $.ajax({
+                url:"/rest/board",
+                type:"POST",
+                data:JSON.stringify(json),
+                contentType:"application/json;charset=utf-8",
+                success:function(responseData){
+                    console.log("서버가 등록후 보낸 코드는 ",responseData);
+					$("#title").val("");
+					$("#writer").val("");
+					$("#content").val("");
+                },
+                error:function(xhr,result,error){
+                    console.log(xhr);
+                }
+            });
+        }
+
+        //비동기로 데이터 가져오기
+        function getList(){
+            $.ajax({
+                url:"/rest/board",
+                type:"GET",
+                success:function(responseData){
+                        //화면 갱신.. react로..
+                        console.log(responseData);
+                        responseData.data;
+
+                        ReactDOM.render(<TableContent dataList={responseData}/>, document.getElementById("list-area"));
+                }
+            });
+        }
+
+
+        //한 건 가져오기
+        function getDetail(board_id){
+            $.ajax({
+                url:"/rest/board/"+board_id,
+                type:"GET",
+                success:function(responseData){
+					console.log(responseData);		//한건의 vo가 json으로 잘 날라온당
+
+					//화면 갱신, 우측화면에 출력
+					$("#board_id").val(responseData.board_id);
+					$("#title2").val(responseData.title);
+					$("#writer2").val(responseData.writer);
+					$("#content2").val(responseData.content);
+					
+                },
+                error:function(xhr,result,error){
+                    console.log(xhr);
+                }
+            });
+        }
+
+
+		 function  edit(){
+            var form = $("#regist-form").serialize();
+            var json = {};
+            json["board_id"]=$("#board_id").val();
+            json["title"]=$("#title2").val();
+            json["writer"]=$("#writer2").val();
+            json["content"]=$("#content2").val();
+
+            $.ajax({
+            	url:"/rest/board",
+                type:"PUT",
+                data:JSON.stringify(json),
+                contentType:"application/json;charset=utf-8",
+                success:function(responseData){
+                    console.log("서버가 수정 후 보낸 코드는 ",responseData);
+					$("#title2").val("");
+					$("#writer2").val("");
+					$("#content2").val("");
+
+                },
+                error:function(xhr,result,error){
+                    console.log(xhr);
+                }
+            });
+        }
+
+		//삭제
+		function del(){
+            $.ajax({
+                url:"/rest/board/"+$("#board_id").val(),
+                type:"DELETE",
+                success:function(responseData){
+					console.log(responseData);	
+					$("#title2").val("");
+					$("#writer2").val("");
+					$("#content2").val("");
+
+                },
+                error:function(xhr,result,error){
+                    console.log(xhr);
+                }
+            });
+
+		}
+
+
+
+        function connect(){
+            //connect to server!!
+            sock = new SockJS("http://localhost:8888/rest/ws/client");
+
+            sock.onopen = function(e){
+                $("#board-title").html("서버 접속 완료");
+            }
+            
+            sock.onclose=function(e){
+                $("#board-title").html("서버 접속 해제");
+            }
+            
+            //서버로 부터 메시지가 도착했을 떄 ..
+            sock.onmessage=function(e){
+                var msg = e.data;
+
+                console.log("msg is = ",msg);
+
+                var json = JSON.parse(msg);
+                console.log("웹소켓을 통해 서버로부터 받은 메세지",json.requestCode);
+
+                if(json.requestCode=="create"){ //누군가 서버에 글 쓰면
+                    getList();
+                }else if(json.requestCode=="read"){
+                    
+                }else if(json.requestCode=="update"){   //누군가 서버에 글 수정
+                    getList();
+                }else if(json.requestCode=="delete"){   //누군가 서버에 글 삭제
+                    getList();
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 id="board-title">RealTime Board</h1>
+        <div class="row">
+          <div class="col-sm-3" style="background-color:lavender;">
+                <div class="container">
+                <form id="regist-form">
+                    <input type="text" id="title"  placeholder="title..">
+                    <input type="text" id="writer"  placeholder="writer ..">
+                    <textarea id="content"  placeholder="content.." style="height:200px"></textarea>
+                    <input type="button" value="등록" id="bt_regist">
+                </form>
+                </div>
+        </div>
+
+          <div id="list-area" class="col-sm-6" style="background-color:lavenderblush; overflow:scroll"> </div>
+
+          <div class="col-sm-3" style="background-color:lavender;">
+            <div class="container">
+                <form>
+                	<input type="hidden" id="board_id">
+                    <input type="text" id="title2"  placeholder="title..">
+                    <input type="text" id="writer2"  placeholder="writer ..">
+                    <textarea id="content2"  placeholder="content.." style="height:200px"></textarea>
+                    <input type="button" value="수정" id="bt_edit">
+                    <input type="button" value="삭제" id="bt_del">
+                </form>
+                </div>
+        </div>
+        </div>
+      </div>
+
+</body>
+</html>

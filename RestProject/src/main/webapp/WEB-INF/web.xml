@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
 	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
@@ -39,6 +39,8 @@
 			<param-value>/WEB-INF/spring/appServlet/rest-context.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
+		<!-- 여러 클라이언트를 처리하려면, 서버는 비동기 처리가 지원되어야 한다. 자바 버전 3.0이상부터 지원해서 2.5에서 바꿔줬음-->
+		<async-supported>true</async-supported>
 	</servlet>
 		
 	<servlet-mapping>
