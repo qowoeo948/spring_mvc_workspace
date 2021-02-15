@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+  <th:block th:replace="fragment/config :: configFragment"/>
+  <script type="text/javascript">
+  	$(function(){
+  		alert("로드했어!!");
+  	});
+  </script>
+</head>
+<body>
+	<form>
+		<input type="text" placeholder="제목입력..">
+		<input type="file">
+		<button type="button">업로드</button>
+	</form>
+	
+</body>
+</html>
