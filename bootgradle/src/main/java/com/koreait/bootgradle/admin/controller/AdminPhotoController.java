@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.koreait.bootgradle.model.common.UploadManager;
 import com.koreait.bootgradle.model.domain.Photo;
 import com.koreait.bootgradle.model.service.photo.PhotoService;
 
@@ -29,6 +30,9 @@ public class AdminPhotoController {
 	public String regist(Photo photo) {
 		//log.debug("넘겨받은 제목은 "+photo.getTitle());
 		System.out.println("넘겨받은 제목은 "+photo.getTitle());
+		System.out.println("넘겨받은 파일명은 "+photo.getMyFile().getOriginalFilename());
+
+		//파일 저장 로직~
 		photoService.regist(photo);
 		
 		return null;

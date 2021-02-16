@@ -8,15 +8,29 @@
 <title>Insert title here</title>
   <th:block th:replace="fragment/config :: configFragment"/>
   <script type="text/javascript">
+  
   	$(function(){
-  		alert("로드했어!!");
+		$("button").click(function(){
+			upload();
+		});
   	});
+  	
+  	//동기업로드
+  	function upload(){
+  		$("form").attr({
+  			action:"/admin/photo",
+  			enctype:"multipart/form-data",
+  			method:"POST"
+  		});
+  		
+  		$("form").submit();
+  	}
   </script>
 </head>
 <body>
 	<form>
-		<input type="text" placeholder="제목입력..">
-		<input type="file">
+		<input type="text" name="title" placeholder="제목입력..">
+		<input type="file" name="myFile">
 		<button type="button">업로드</button>
 	</form>
 	
